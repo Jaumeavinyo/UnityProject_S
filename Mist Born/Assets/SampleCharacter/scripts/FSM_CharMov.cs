@@ -124,15 +124,7 @@ public class FSM_CharMov : FSM
         return idle;
     }
 
-   public void handleInputs()
-    {
-        //   ### --- ###
-        //horizontalInput = my_sm.inputAction_move.ReadValue<Vector2>().x;
-        //if (Mathf.Abs(horizontalInput) > Mathf.Abs(0.1f))
-        //{
-        //    stateMachine.ChangeState(my_sm.run);
-        //}
-    }
+   
     public bool isGrounded()
     {
         bool ret = false;
