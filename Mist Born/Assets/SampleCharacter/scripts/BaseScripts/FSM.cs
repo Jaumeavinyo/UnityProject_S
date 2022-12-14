@@ -53,6 +53,6 @@ public class FSM : MonoBehaviour
     {
         string state_string = currentState != null ? currentState.name : "(state null)";
         
-        GUILayout.Label(state_string);
+        //GUILayout.Label(state_string);
     }
 }

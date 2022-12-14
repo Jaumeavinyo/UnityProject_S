@@ -18,7 +18,7 @@ public class energySlider : MonoBehaviour
     public int originalGrowFactor;
     void Start()
     {
-        maxValue_ = 10000;
+        maxValue_ = 1000;
         currValue_ = 0;
         growFactor = 3;
         originalGrowFactor = growFactor;

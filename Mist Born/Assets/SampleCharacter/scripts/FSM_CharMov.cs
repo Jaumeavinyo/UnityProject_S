@@ -35,7 +35,8 @@ public class FSM_CharMov : FSM
 
     public energySlider energySlider;
     public characterSFX audioSFX;
-    
+
+    public float playerHP = 100;
 
     public float        speed = 5;
     public float        dashSpeed = 10;

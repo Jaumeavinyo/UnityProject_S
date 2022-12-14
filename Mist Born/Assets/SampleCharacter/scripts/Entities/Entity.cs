@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class Entity : MonoBehaviour
 {
+    public string name;
+    public Vector2 Position;
 
-    protected Vector2 Position;
-
+    protected float distanceToPlayer;
 
     public Entity(Vector2 initialPos)
     {
@@ -15,7 +16,7 @@ public class Entity : MonoBehaviour
 
     void Start()
     {
-       
+       distanceToPlayer = 0;
     }
 
 
