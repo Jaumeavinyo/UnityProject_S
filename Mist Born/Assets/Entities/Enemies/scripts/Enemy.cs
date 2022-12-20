@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Pathfinding;
+
 public enum State
 {
     wandering,
@@ -12,7 +14,17 @@ public enum State
 public class Enemy : Entity
 {
 
+    public float speed;
+    public float nextWayPointDistance = 3f;
+
+    public Path path;
+    public int currentWayPoint = 0;
+    public bool reachedEndOfPath = false;
+
+    public Seeker seeker;
+
     public GameObject playerGObj;
+    public Rigidbody2D rb;
 
     public State previousState;
     public State currentState;

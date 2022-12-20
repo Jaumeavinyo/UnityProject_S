@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem.Android;
-
+using Pathfinding;
 public class Enemy_0 : Enemy
 {
 
@@ -21,7 +21,14 @@ public class Enemy_0 : Enemy
     }
     void Start()
     {
+        rb = GetComponent<Rigidbody2D>();
+        seeker = GetComponent<Seeker>();
+
+        InvokeRepeating("UpdatePath", 0f, 0.5f);
+        
         currentState = State.waitManagerOrders;
+
+        speed = 200;
 
         playerVisible = false;
 
@@ -31,8 +38,13 @@ public class Enemy_0 : Enemy
         toDie = false;
     }
 
-   
-    void Update()
+    void UpdatePath()
+    {
+        seeker.StartPath(rb.transform.position, playerGObj.transform.position, onPathComplete);
+
+    }
+
+    void FixedUpdate()
     {
         distanceToPlayer = playerDistance(playerGObj);
         playerVisible = isPlayerVisible();
@@ -107,6 +119,14 @@ public class Enemy_0 : Enemy
 
     }
 
+    void onPathComplete(Path p)
+    {
+        if (!p.error)
+        {
+            path = p;
+            currentWayPoint = 0;
+        }
+    }
     public void wanderArroundFunc()
     {
         animator.Play("BOD_idle");
@@ -115,6 +135,32 @@ public class Enemy_0 : Enemy
     public void chasePlayerFunc(GameObject player)
     {
         animator.Play("BOD_walk");
+        if(path == null)
+        {
+
+        }
+        if(currentWayPoint >= path.vectorPath.Count)
+        {
+            reachedEndOfPath = true;
+        }
+        else
+        {
+            reachedEndOfPath = false;
+        }
+
+        Vector2 direction = ((Vector2)path.vectorPath[currentWayPoint] - rb.position);
+        //direction = direction.normalized;
+        Vector2 force = direction * speed * Time.deltaTime;
+        //force.y = 0;
+        rb.AddForce(force);
+
+        float distance = Vector2.Distance(rb.position, path.vectorPath[currentWayPoint]);
+        //float xdistance = rb.transform.position.x - path.vectorPath[currentWayPoint].x;
+
+        if(distance < nextWayPointDistance)
+        {
+            currentWayPoint++;
+        }
     }
     public void handleCurrentState()
     {
