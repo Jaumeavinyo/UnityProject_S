@@ -15,7 +15,7 @@ public class Enemy : Entity
 {
 
     public float speed;
-    public float nextWayPointDistance = 3f;
+    public float nextWayPointDistance;
 
     public Path path;
     public int currentWayPoint = 0;

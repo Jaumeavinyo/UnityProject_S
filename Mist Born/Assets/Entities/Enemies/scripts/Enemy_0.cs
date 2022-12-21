@@ -23,12 +23,12 @@ public class Enemy_0 : Enemy
     {
         rb = GetComponent<Rigidbody2D>();
         seeker = GetComponent<Seeker>();
-
+        nextWayPointDistance = 3f;
         InvokeRepeating("UpdatePath", 0f, 0.5f);
         
         currentState = State.waitManagerOrders;
 
-        speed = 200;
+        speed = 5;
 
         playerVisible = false;
 
@@ -40,7 +40,18 @@ public class Enemy_0 : Enemy
 
     void UpdatePath()
     {
-        seeker.StartPath(rb.transform.position, playerGObj.transform.position, onPathComplete);
+        int addedDistanceFromPlayer;
+        if(this.transform.position.x-playerGObj.transform.position.x < 0)
+        {
+            addedDistanceFromPlayer = -1;
+        }
+        else
+        {
+            addedDistanceFromPlayer = 1;
+        }
+        Vector3 playerPosToChase = playerGObj.transform.position;
+        playerPosToChase.x += addedDistanceFromPlayer;
+        seeker.StartPath(rb.transform.position, playerPosToChase, onPathComplete);
 
     }
 
@@ -86,7 +97,7 @@ public class Enemy_0 : Enemy
                 }
             case State.attacking:
                 {
-
+                    attackPlayerFunc();
                     if (distanceToPlayer > attackRange)
                     {
                         attackPlayer = false;
@@ -132,6 +143,10 @@ public class Enemy_0 : Enemy
         animator.Play("BOD_idle");
     }
 
+    public void attackPlayerFunc()
+    {
+        animator.Play("BOD_attack_melee");
+    }
     public void chasePlayerFunc(GameObject player)
     {
         animator.Play("BOD_walk");
@@ -149,10 +164,10 @@ public class Enemy_0 : Enemy
         }
 
         Vector2 direction = ((Vector2)path.vectorPath[currentWayPoint] - rb.position);
-        //direction = direction.normalized;
-        Vector2 force = direction * speed * Time.deltaTime;
-        //force.y = 0;
-        rb.AddForce(force);
+        direction = direction.normalized;
+        Vector2 force = direction * speed;
+        rb.velocity = force;
+        //rb.AddForce(force);
 
         float distance = Vector2.Distance(rb.position, path.vectorPath[currentWayPoint]);
         //float xdistance = rb.transform.position.x - path.vectorPath[currentWayPoint].x;
