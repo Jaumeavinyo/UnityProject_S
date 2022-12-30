@@ -15,13 +15,6 @@ public class Enemy : Entity
 {
 
     public float speed;
-    public float nextWayPointDistance;
-
-    public Path path;
-    public int currentWayPoint = 0;
-    public bool reachedEndOfPath = false;
-
-    public Seeker seeker;
 
     public GameObject playerGObj;
     public Rigidbody2D rb;
@@ -31,6 +24,10 @@ public class Enemy : Entity
 
     public float visionRange;
     public float attackRange;
+
+    public float  playerRelativePos;
+
+   
 
     public bool playerVisible;
 

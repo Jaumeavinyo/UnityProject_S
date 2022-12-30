@@ -10,6 +10,13 @@ public class Enemy_0 : Enemy
     public FSM_CharMov playerScript;
     public EntityManager entityManager;
 
+    public float timeSinceLastCombo;
+    public float lastComboTime = 0;
+    public bool comboFinished = false;
+    public bool attackFinished = true;
+    public bool distanceAttack = false;
+
+
     public Enemy_0(string name_, State initialState, Vector2 initialPos) : base(name_,initialState,initialPos)
     {
 
@@ -21,14 +28,12 @@ public class Enemy_0 : Enemy
     }
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
-        seeker = GetComponent<Seeker>();
-        nextWayPointDistance = 3f;
-        InvokeRepeating("UpdatePath", 0f, 0.5f);
-        
+        rb = GetComponent<Rigidbody2D>();     
+        InvokeRepeating("UpdatePath", 0f, 0.5f);    
         currentState = State.waitManagerOrders;
+        speed = 3;
 
-        speed = 5;
+        timeSinceLastCombo = 0f;
 
         playerVisible = false;
 
@@ -40,18 +45,7 @@ public class Enemy_0 : Enemy
 
     void UpdatePath()
     {
-        int addedDistanceFromPlayer;
-        if(this.transform.position.x-playerGObj.transform.position.x < 0)
-        {
-            addedDistanceFromPlayer = -1;
-        }
-        else
-        {
-            addedDistanceFromPlayer = 1;
-        }
-        Vector3 playerPosToChase = playerGObj.transform.position;
-        playerPosToChase.x += addedDistanceFromPlayer;
-        seeker.StartPath(rb.transform.position, playerPosToChase, onPathComplete);
+        
 
     }
 
@@ -59,7 +53,10 @@ public class Enemy_0 : Enemy
     {
         distanceToPlayer = playerDistance(playerGObj);
         playerVisible = isPlayerVisible();
+        timeSinceLastCombo = Time.time - lastComboTime;
+        lookToPlayer();
 
+        
         switch (currentState)
         {
             case State.wandering:
@@ -80,6 +77,7 @@ public class Enemy_0 : Enemy
             case State.chasing:
                 {
                     chasePlayerFunc(playerGObj);
+                    
                     if (distanceToPlayer > visionRange)
                     {
                         chasePlayer = false;
@@ -92,16 +90,28 @@ public class Enemy_0 : Enemy
                         chasePlayer = false;
                         break;
                     }
+                    if (distanceAttack)
+                    {
+                        attackPlayer = true;
+                        chasePlayer = false;
+                        break;
+                    }
 
                     break;
                 }
             case State.attacking:
                 {
-                    attackPlayerFunc();
-                    if (distanceToPlayer > attackRange)
+                    if (!distanceAttack)
+                    {
+                        meleeAttackPlayerFunc();
+                    }
+                    if (distanceToPlayer > attackRange && !distanceAttack)
                     {
                         attackPlayer = false;
                         chasePlayer = true;
+                    }else if (distanceAttack)
+                    {
+                        distanceAttackPlayerFunc();
                     }
 
                     if (playerScript.playerHP <= 0)
@@ -130,12 +140,37 @@ public class Enemy_0 : Enemy
 
     }
 
-    void onPathComplete(Path p)
+   void lookToPlayer()
     {
-        if (!p.error)
+        if(currentState != State.die || currentState != State.wandering)
         {
-            path = p;
-            currentWayPoint = 0;
+            switch (currentState)
+            {
+                case State.chasing:
+                    if (gameObject.transform.position.x > playerGObj.transform.position.x)
+                    {
+                        gameObject.transform.localScale = new Vector3(2.85f, gameObject.transform.localScale.y, gameObject.transform.localScale.z);
+                    }
+                    else
+                    {
+                        gameObject.transform.localScale = new Vector3(-2.85f, gameObject.transform.localScale.y, gameObject.transform.localScale.z);
+                    }
+                    break;
+                case State.attacking:
+                    if (attackFinished)
+                    {
+                        if (gameObject.transform.position.x > playerGObj.transform.position.x)
+                        {
+                            gameObject.transform.localScale = new Vector3(2.85f, gameObject.transform.localScale.y, gameObject.transform.localScale.z);
+                        }
+                        else
+                        {
+                            gameObject.transform.localScale = new Vector3(-2.85f, gameObject.transform.localScale.y, gameObject.transform.localScale.z);
+                        }
+                    }
+                    break;
+            }
+            
         }
     }
     public void wanderArroundFunc()
@@ -143,39 +178,52 @@ public class Enemy_0 : Enemy
         animator.Play("BOD_idle");
     }
 
-    public void attackPlayerFunc()
+    public void meleeAttackPlayerFunc()
+    {   
+        if(timeSinceLastCombo > 2)
+        {
+            lastComboTime = Time.time;
+            animator.Play("BOD_attack_melee");
+            
+            attackFinished = false;//for lookToPlayerFunc
+        }
+       if( animator.GetCurrentAnimatorStateInfo(0).IsName("BOD_attack_melee") == true && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1)
+        {
+            attackFinished = true;
+            animator.Play("BOD_idle");
+        }
+    }
+    public void distanceAttackPlayerFunc()
     {
-        animator.Play("BOD_attack_melee");
+        lastComboTime = Time.time;
+        animator.Play("BOD_attack_castSpell");
+        attackFinished = false;//for lookToPlayerFunc
+        if (animator.GetCurrentAnimatorStateInfo(0).IsName("BOD_attack_castSpell") == true && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1)
+        {
+            attackFinished = true;
+            distanceAttack = false;
+            animator.Play("BOD_idle");
+        }
     }
     public void chasePlayerFunc(GameObject player)
     {
         animator.Play("BOD_walk");
-        if(path == null)
-        {
-
-        }
-        if(currentWayPoint >= path.vectorPath.Count)
-        {
-            reachedEndOfPath = true;
-        }
-        else
-        {
-            reachedEndOfPath = false;
-        }
-
-        Vector2 direction = ((Vector2)path.vectorPath[currentWayPoint] - rb.position);
+        
+        Vector2 direction = ((Vector2)playerGObj.transform.position - rb.position);
         direction = direction.normalized;
         Vector2 force = direction * speed;
+        force.y = 0;
         rb.velocity = force;
         //rb.AddForce(force);
 
-        float distance = Vector2.Distance(rb.position, path.vectorPath[currentWayPoint]);
-        //float xdistance = rb.transform.position.x - path.vectorPath[currentWayPoint].x;
+        float distance = Vector2.Distance(rb.position, (Vector2)playerGObj.transform.position);
 
-        if(distance < nextWayPointDistance)
+        if (timeSinceLastCombo > 4)
         {
-            currentWayPoint++;
+            distanceAttack = true;
         }
+
+       
     }
     public void handleCurrentState()
     {

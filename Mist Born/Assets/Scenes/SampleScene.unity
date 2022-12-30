@@ -15955,7 +15955,6 @@ GameObject:
   - component: {fileID: 1461391321}
   - component: {fileID: 1461391325}
   - component: {fileID: 1461391326}
-  - component: {fileID: 1461391327}
   m_Layer: 8
   m_Name: BringerOfDeath
   m_TagString: Untagged
@@ -16060,7 +16059,7 @@ Transform:
   m_GameObject: {fileID: 1461391320}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -20, y: 4.94, z: 0}
-  m_LocalScale: {x: 2.8582, y: 2.8582, z: 2.8582}
+  m_LocalScale: {x: 2.85, y: 2.85, z: 2.85}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 6
@@ -16081,16 +16080,13 @@ MonoBehaviour:
   name: Bringer of death
   Position: {x: 0, y: 0}
   speed: 0
-  nextWayPointDistance: 1
-  currentWayPoint: 0
-  reachedEndOfPath: 0
-  seeker: {fileID: 1461391327}
   playerGObj: {fileID: 1702089920}
   rb: {fileID: 1461391322}
   previousState: 3
   currentState: 0
   visionRange: 10
-  attackRange: 2
+  attackRange: 2.5
+  playerRelativePos: 0
   playerVisible: 0
   wanderArround: 0
   chasePlayer: 0
@@ -16098,6 +16094,11 @@ MonoBehaviour:
   toDie: 0
   playerScript: {fileID: 1702089925}
   entityManager: {fileID: 1917819754}
+  timeSinceLastCombo: 0
+  lastComboTime: 0
+  comboFinished: 0
+  attackFinished: 0
+  distanceAttack: 0
 --- !u!95 &1461391326
 Animator:
   serializedVersion: 3
@@ -16117,34 +16118,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &1461391327
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1461391320}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 373b52eb9bf8c40f785bb6947a1aee66, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  version: 1
-  drawGizmos: 1
-  detailedGizmos: 0
-  startEndModifier:
-    addPoints: 0
-    exactStartPoint: 3
-    exactEndPoint: 3
-    useRaycasting: 0
-    mask:
-      serializedVersion: 2
-      m_Bits: 4294967295
-    useGraphRaycasting: 0
-  traversableTags: -1
-  tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-  graphMask:
-    value: -1
 --- !u!1 &1552165247
 GameObject:
   m_ObjectHideFlags: 0
@@ -17148,7 +17121,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1907908143
 MonoBehaviour:
   m_ObjectHideFlags: 0
