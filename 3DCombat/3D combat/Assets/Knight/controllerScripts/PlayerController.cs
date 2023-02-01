@@ -12,33 +12,41 @@ enum States
 public class PlayerController : MonoBehaviour
 {
 
+    InputHandler inputHandler;
+
     CharacterController characterController;
-    Rigidbody rb;
-    Animator animator;
+    Rigidbody           rb;
+    Animator            animator;
+    public Camera       camera;
+
+
 
     States currentState;
-    
-    public InputAction inputAction_move;
-    public Vector2 moveDir;
-    public Vector2 lookDir;
-    public float moveSpeed;
 
-    public PlayerInput playerInputs;
 
-    void Start()
+    Vector3 moveDirection;
+    Vector3 rotateDirection;
+
+    public float movementSpeed = 4;
+    public float rotationSpeed = 0.3f;
+
+
+    private void Awake()
     {
         characterController = GetComponent<CharacterController>();
-        rb = GetComponent<Rigidbody>();
-        animator = GetComponent<Animator>();
-
+        rb                  = GetComponent<Rigidbody>();
+        animator            = GetComponent<Animator>();
+        //camera              = GetComponent<Camera>();
+        inputHandler        = GetComponent<InputHandler>();
+    }
+    void Start()
+    {
         currentState = States.idle;
-
-        moveSpeed = 0.1f;
     }
 
     void Update()
     {
-        moveDir = inputAction_move.ReadValue<Vector2>();
+        
         changeStates();
         changeAnimVars();
         
@@ -46,39 +54,52 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        
-        characterController.Move(new Vector3(moveDir.x * moveSpeed, 0, moveDir.y * moveSpeed));
+        moveRB();
+        rotateRB();
 
-        if(moveDir.magnitude != 0)
+    }
+
+    public void moveRB()
+    {
+        moveDirection = camera.transform.forward * inputHandler.verticalInput;
+        moveDirection += camera.transform.right * inputHandler.horizontalInput;
+        moveDirection.Normalize();
+
+        moveDirection.y = 0;
+
+        Vector3 moveVelocity = moveDirection * movementSpeed;
+        rb.velocity = moveVelocity;
+    }
+
+    public void rotateRB()
+    {
+        rotateDirection = camera.transform.forward * inputHandler.verticalInput;
+        rotateDirection += camera.transform.right * inputHandler.horizontalInput;
+        rotateDirection.Normalize();
+        rotateDirection.y = 0;
+
+        if(rotateDirection == Vector3.zero)
         {
-            lookDir = new Vector3(moveDir.x, 0, moveDir.y);
+            rotateDirection = transform.forward;
         }
 
-        characterController.transform.rotation = Quaternion.LookRotation(lookDir);
-        //this.transform.rotation = Quaternion.LookRotation(lookDir);
-        Debug.Log("x = " + lookDir.x + "y = " + lookDir.y);
+        Quaternion targetRotation = Quaternion.LookRotation(rotateDirection);
+        Quaternion playerRotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed*Time.deltaTime);
+        transform.rotation = playerRotation;
     }
 
-    private void OnEnable()
+    private void OnGUI()
     {
-        inputAction_move.Enable();
+        //string lookDirStr = "x = "+lookDir.x+" y = "+ lookDir.y;
+        //GUILayout.Label(lookDirStr);
     }
-    private void OnDisable()
-    {
-        inputAction_move.Disable();
-    }
+
+  
 
 
     void changeStates()
     {
-        if (moveDir.magnitude == 0)
-        {
-            currentState = States.idle;
-        }
-        else if (moveDir.magnitude != 0)
-        {
-            currentState = States.run;
-        }
+        
     }
 
     void changeAnimVars()
@@ -94,9 +115,11 @@ public class PlayerController : MonoBehaviour
         if(currentState == States.run)
         {
             animator.SetBool("stateRun", true);
+            
         }else if(currentState != States.run)
         {
             animator.SetBool("stateRun", false);
+            
         }
     }
 }
