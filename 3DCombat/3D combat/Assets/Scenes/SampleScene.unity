@@ -564,6 +564,7 @@ GameObject:
   - component: {fileID: 1512174142}
   - component: {fileID: 1512174136}
   - component: {fileID: 1512174140}
+  - component: {fileID: 1512174143}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -700,14 +701,14 @@ MonoBehaviour:
   inputAction_move:
     m_Name: Input Action_move
     m_Type: 0
-    m_ExpectedControlType: 
+    m_ExpectedControlType: Axis
     m_Id: 6cac8e96-b1a0-42d3-86d6-e793afdd933c
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 2D Vector
       m_Id: 09bb15e1-2fb0-4e4a-8633-f60600f64baa
-      m_Path: 2DVector
+      m_Path: 2DVector(mode=2)
       m_Interactions: 
       m_Processors: 
       m_Groups: 
@@ -745,6 +746,19 @@ MonoBehaviour:
       m_Groups: 
       m_Action: Input Action_move
       m_Flags: 8
+  animatorHandler: {fileID: 0}
   inputMoveDir: {x: 0, y: 0}
   verticalInput: 0
   horizontalInput: 0
+--- !u!114 &1512174143
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1512174135}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67aec8298ab943a4e92cb29978ae1ac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

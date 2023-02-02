@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
 {
 
     InputHandler inputHandler;
+    AnimatorHandler animatorHandler;
 
     CharacterController characterController;
     Rigidbody           rb;
@@ -27,8 +28,11 @@ public class PlayerController : MonoBehaviour
     Vector3 moveDirection;
     Vector3 rotateDirection;
 
-    public float movementSpeed = 4;
-    public float rotationSpeed = 0.3f;
+
+    private float walkSpeed = 3;
+    private float runSpeed = 6;
+    public float movementSpeed = 0;
+    public float rotationSpeed = 0.1f;
 
 
     private void Awake()
@@ -38,6 +42,7 @@ public class PlayerController : MonoBehaviour
         animator            = GetComponent<Animator>();
         //camera              = GetComponent<Camera>();
         inputHandler        = GetComponent<InputHandler>();
+        animatorHandler     = GetComponent<AnimatorHandler>();
     }
     void Start()
     {
@@ -46,9 +51,16 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if(inputHandler.moveAmount > 0.55f)
+        {
+            movementSpeed = runSpeed;
+        }else if(inputHandler.moveAmount < 0.55f)
+        {
+            movementSpeed = walkSpeed;
+        }
         
         changeStates();
-        changeAnimVars();
+  
         
     }
 
@@ -102,24 +114,5 @@ public class PlayerController : MonoBehaviour
         
     }
 
-    void changeAnimVars()
-    {
-        if(currentState == States.idle)
-        {
-            
-        }else if(currentState != States.idle)
-        {
-
-        }
-
-        if(currentState == States.run)
-        {
-            animator.SetBool("stateRun", true);
-            
-        }else if(currentState != States.run)
-        {
-            animator.SetBool("stateRun", false);
-            
-        }
-    }
+    
 }

@@ -7,8 +7,12 @@ public class InputHandler : MonoBehaviour
 
 
     public InputAction inputAction_move;
+    public AnimatorHandler animatorHandler;
 
     public Vector2 inputMoveDir;
+
+    public float moveAmount;
+
     public float verticalInput;
     public float horizontalInput;
 
@@ -21,12 +25,19 @@ public class InputHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        inputMoveDir = inputAction_move.ReadValue<Vector2>().normalized;
+        inputMoveDir = inputAction_move.ReadValue<Vector2>();
         verticalInput = inputMoveDir.y;
         horizontalInput = inputMoveDir.x;
+        animatorHandler = GetComponent<AnimatorHandler>();
+        handleMovementInput();
     }
 
-
+    private void handleMovementInput()
+    {
+        moveAmount = Mathf.Clamp01(Mathf.Abs(horizontalInput) + Mathf.Abs(verticalInput));
+        
+        animatorHandler.updateAnimatorValues(0, moveAmount);
+    }
 
     private void OnEnable()
     {

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 51e9994fb80177f4b99442abb0cba11d
+guid: bc10596a160db3145ab6b50467edf554
 ModelImporter:
   serializedVersion: 20101
   internalIDToNameTable:
@@ -89,7 +89,7 @@ ModelImporter:
     legStretch: 0.05
     feetSpacing: 0
     globalScale: 1
-    rootMotionBoneName: 
+    rootMotionBoneName: mixamorig:Hips
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
@@ -97,7 +97,7 @@ ModelImporter:
   autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
-  avatarSetup: 0
+  avatarSetup: 1
   additionalBone: 0
   userData: 
   assetBundleName: 
