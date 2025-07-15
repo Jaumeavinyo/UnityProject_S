@@ -50,7 +50,7 @@ public class dash_state : FSM_BaseState
             my_sm.ChangeState(my_sm.idle);
         }
 
-        if (dashing && my_sm.animator.GetCurrentAnimatorStateInfo(0).IsName("dash") && my_sm.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1.5)
+        if (dashing && my_sm.animator.GetCurrentAnimatorStateInfo(0).IsName("dash") && my_sm.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1.0f)
         {
             chooseStateAfterDash();
         }
@@ -65,13 +65,14 @@ public class dash_state : FSM_BaseState
     public override void Exit()
     {
         base.Exit();
+        dashing = false;
     }
 
     public void dash(int dir)
     {
-        Vector2 velDir = my_sm.rigidBody.velocity;
+        Vector2 velDir = my_sm.rigidBody.linearVelocity;
         velDir.x = my_sm.dashSpeed * dir;
-        my_sm.rigidBody.velocity = velDir;
+        my_sm.rigidBody.linearVelocity = velDir;
     }
 
     public void chooseStateAfterDash()
@@ -80,6 +81,7 @@ public class dash_state : FSM_BaseState
         {
             if (!my_sm.grounded)
             {
+                //my_sm.jump.jumpingMid = false;
                 my_sm.ChangeState(my_sm.jump);
             }
             else

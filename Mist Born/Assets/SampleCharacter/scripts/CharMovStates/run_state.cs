@@ -16,6 +16,11 @@ public class run_state : FSM_BaseState
         base.Enter();
         horizontalInput = 0;
         jumpInput = false;
+        dashInput = false;
+        rollInput = false;
+        lightAttackInput = false;
+        heavyAttackInput = false;
+       
     }
 
     public override void UpdateLogic()
@@ -29,9 +34,7 @@ public class run_state : FSM_BaseState
         if (!my_sm.grounded)
         {
             my_sm.ChangeState(my_sm.jump);
-        }
-
-        
+        }        
         
     }
 
@@ -39,9 +42,9 @@ public class run_state : FSM_BaseState
     {
         base.UpdatePhysics();
 
-        Vector2 velDir = my_sm.rigidBody.velocity;
+        Vector2 velDir = my_sm.rigidBody.linearVelocity;
         velDir.x = my_sm.speed*horizontalInput;
-        my_sm.rigidBody.velocity = velDir;
+        my_sm.rigidBody.linearVelocity = velDir;
     }
 
     public override void Exit()

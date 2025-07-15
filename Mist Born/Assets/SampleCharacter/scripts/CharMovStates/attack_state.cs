@@ -40,7 +40,7 @@ public class attack_state : FSM_BaseState
 
         if (typeHeavy)
         {            
-            if(my_sm.animator.GetCurrentAnimatorStateInfo(0).IsName("heavy_attack") == false && my_sm.energySlider.currValue_ > heavyAttackEnergy)
+            if(my_sm.animator.GetCurrentAnimatorStateInfo(0).IsName("heavy_attack") == false && my_sm.energySlider.currValue_ > heavyAttackEnergy)//instant change to anim heavy attack
             {
                 my_sm.animator.Play("heavy_attack");
                 my_sm.energySlider.modifyEnergyValue(-heavyAttackEnergy);
@@ -48,12 +48,13 @@ public class attack_state : FSM_BaseState
             }
             else if(my_sm.animator.GetCurrentAnimatorStateInfo(0).IsName("heavy_attack") == true && my_sm.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1)
             {
-                my_sm.ChangeState(my_sm.idle);
+                chooseStateAfterAttack();
                 //my_sm.audioSFX.playSound(my_sm.audioSFX.errorAttack);
-            }else if(my_sm.energySlider.currValue_ < heavyAttackEnergy && my_sm.animator.GetCurrentAnimatorStateInfo(0).IsName("heavy_attack") == false)
+            }
+            else if(my_sm.energySlider.currValue_ < heavyAttackEnergy && my_sm.animator.GetCurrentAnimatorStateInfo(0).IsName("heavy_attack") == false)//should never enter here, state input handle already see this condition
             {
-                my_sm.ChangeState(my_sm.idle);
-               //my_sm.audioSFX.playSound(my_sm.audioSFX.errorAttack);
+                chooseStateAfterAttack();
+                //my_sm.audioSFX.playSound(my_sm.audioSFX.errorAttack);
             }
         }
         else if(!typeHeavy)
@@ -61,9 +62,12 @@ public class attack_state : FSM_BaseState
             
             if(my_sm.energySlider.currValue_ > lightAttackEnergy)
             {
-                if (my_sm.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1.0f)
+                if ((my_sm.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1.0f && my_sm.animator.GetCurrentAnimatorStateInfo(0).IsName("combo_attack_1")))//prev attack not finished
                 {
 
+                    lightAttack(currComboAttack);
+                }else if (!my_sm.animator.GetCurrentAnimatorStateInfo(0).IsName("combo_attack_1"))//instant change to anim light attack
+                {
                     lightAttack(currComboAttack);
                 }
             }
@@ -86,9 +90,9 @@ public class attack_state : FSM_BaseState
                         my_sm.animator.Play("combo_attack_1");
                         my_sm.energySlider.modifyEnergyValue(-lightAttackEnergy);
                         my_sm.audioSFX.playSound(my_sm.audioSFX.swordSlash3);
-                        Vector2 velDir = my_sm.rigidBody.velocity;
+                        Vector2 velDir = my_sm.rigidBody.linearVelocity;
                         velDir.x = my_sm.speed * my_sm.lastDirectionInput;
-                        my_sm.rigidBody.velocity = velDir;
+                        my_sm.rigidBody.linearVelocity = velDir;
                     }
                     else if (my_sm.animator.GetCurrentAnimatorStateInfo(0).IsName("combo_attack_1") == true)
                     {
@@ -99,8 +103,7 @@ public class attack_state : FSM_BaseState
                         }
                         if (my_sm.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1 && newAttackRequested == false && currComboAttack == 0)
                         {
-                           
-                            my_sm.ChangeState(my_sm.idle);  
+                            chooseStateAfterAttack();
                         }
                     }
                     break;
@@ -113,9 +116,9 @@ public class attack_state : FSM_BaseState
                         my_sm.animator.Play("combo_attack_2");
                         my_sm.energySlider.modifyEnergyValue(-lightAttackEnergy);
                         my_sm.audioSFX.playSound(my_sm.audioSFX.swordSlash2);
-                        Vector2 velDir = my_sm.rigidBody.velocity;
+                        Vector2 velDir = my_sm.rigidBody.linearVelocity;
                         velDir.x = my_sm.speed * my_sm.lastDirectionInput;
-                        my_sm.rigidBody.velocity = velDir;
+                        my_sm.rigidBody.linearVelocity = velDir;
                     }
                     else if (my_sm.animator.GetCurrentAnimatorStateInfo(0).IsName("combo_attack_2") == true)
                     {
@@ -127,7 +130,7 @@ public class attack_state : FSM_BaseState
                         if (my_sm.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1 && newAttackRequested == false && currComboAttack == 1)
                         {
 
-                            my_sm.ChangeState(my_sm.idle);
+                            chooseStateAfterAttack();
                         }
                     }
                     break;
@@ -140,15 +143,15 @@ public class attack_state : FSM_BaseState
                         my_sm.animator.Play("heavy_attack");
                         my_sm.energySlider.modifyEnergyValue(-lightAttackEnergy);
                         my_sm.audioSFX.playSound(my_sm.audioSFX.swordSlash1);
-                        Vector2 velDir = my_sm.rigidBody.velocity;
+                        Vector2 velDir = my_sm.rigidBody.linearVelocity;
                         velDir.x = my_sm.speed * my_sm.lastDirectionInput;
-                        my_sm.rigidBody.velocity = velDir;
+                        my_sm.rigidBody.linearVelocity = velDir;
                     }
                     else
                     {
                         if (my_sm.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1)
                         {
-                            my_sm.ChangeState(my_sm.idle);
+                            chooseStateAfterAttack();
                         }
                     }
                     break;
@@ -156,7 +159,16 @@ public class attack_state : FSM_BaseState
         }
     }
 
-
+    void chooseStateAfterAttack()
+    {
+        if(my_sm.lastDirectionInput == 0.0f)
+        {
+            my_sm.ChangeState(my_sm.idle);
+        }else if(my_sm.lastDirectionInput != 0.0f)
+        {
+            my_sm.ChangeState(my_sm.run);
+        }
+    }
     public void handleStateInputs()
     {
       

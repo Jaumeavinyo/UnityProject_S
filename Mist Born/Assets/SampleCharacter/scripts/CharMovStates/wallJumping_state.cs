@@ -13,9 +13,18 @@ public class wallJumping_state : FSM_BaseState
         my_sm = (FSM_CharMov)stateMachine;
     }
 
-    // Update is called once per frame
-    void Update()
+    public override void Enter()
     {
-        
+        base.Enter();
+        horizontalInput = 0;
+        jumpInput = false;
     }
+
+    public override void UpdateLogic()
+    {
+        base.UpdateLogic();
+        Vector2 velDir = my_sm.rigidBody.linearVelocity;
+        //velDir.y;
+    }
+
 }

@@ -213,7 +213,7 @@ public class Enemy_0 : Enemy
         direction = direction.normalized;
         Vector2 force = direction * speed;
         force.y = 0;
-        rb.velocity = force;
+        rb.linearVelocity = force;
         //rb.AddForce(force);
 
         float distance = Vector2.Distance(rb.position, (Vector2)playerGObj.transform.position);

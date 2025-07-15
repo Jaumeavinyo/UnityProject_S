@@ -28,6 +28,7 @@ public class FSM_CharMov : FSM
     public dash_state       dash;
     public roll_state       roll;
     public attack_state     attack;
+    public wallJumping_state wallJump;
 
     public Rigidbody2D          rigidBody;
     public Animator             animator;
@@ -42,6 +43,8 @@ public class FSM_CharMov : FSM
     public float        dashSpeed = 10;
     public float        rollSpeed = 10;
     public float        jumpForce = 6;
+
+    public int doubleJumpEnergy = 100;
 
     public float        directionInput;
     public float        lastDirectionInput;
@@ -62,10 +65,6 @@ public class FSM_CharMov : FSM
         rigidBody = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         capsuleCollider = GetComponent<CapsuleCollider2D>();
-
-        
-        
-        
 
         idle = new idle_state(this);
         run = new run_state(this);

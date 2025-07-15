@@ -20,6 +20,8 @@ public class idle_state : FSM_BaseState
         jumpInput =         false;
         dashInput =         false;
         rollInput =         false;
+        lightAttackInput =  false;
+        heavyAttackInput =  false;
     }
 
     public override void UpdateLogic()
@@ -35,7 +37,7 @@ public class idle_state : FSM_BaseState
     public override void UpdatePhysics()
     {
         base.UpdatePhysics();
-        my_sm.rigidBody.velocity = my_sm.rigidBody.velocity * 0;//avoid moving in idle by error
+        my_sm.rigidBody.linearVelocity = my_sm.rigidBody.linearVelocity * 0;//avoid moving in idle by error
     }
     public override void Exit()
     {

@@ -12,10 +12,11 @@ public class jump_state : FSM_BaseState
     private bool doubleJumping;
     private bool jumpNow;
     private bool jumping;
-    private bool rising;
-    private bool jumpingMid;
-    private bool falling;
-    public int doubleJumpEnergy;
+    private bool risingStage;
+    public bool jumpingMid;
+    private bool fallingStage;
+  
+    public bool rollInputJump = false;//predefined as false, in exit set to false always
     public jump_state(FSM_CharMov myStateMachine) : base("jump_state", myStateMachine)
     {
         my_sm = (FSM_CharMov)stateMachine;
@@ -24,28 +25,44 @@ public class jump_state : FSM_BaseState
 
     public override void Enter()
     {
-        base.Enter();
+        base.Enter();             
+
         horizontalInput = 0;
+        jumpInput = false;
+        dashInput = false;
+        rollInput = false;
+        lightAttackInput = false;
+        heavyAttackInput = false;
+      
         currState = jumpStates.JUMP;
+
         doubleJump = false;
         doubleJumping = false;
+
         jumpNow = false;
         jumping = false;
-        rising = false;
+
+        risingStage = false;
         jumpingMid = false;
-        falling = false;
-        doubleJumpEnergy = 100;
+        fallingStage = false;
+        
+        handleOtherCases();
     }
 
     public override void UpdateLogic()
     {
         base.UpdateLogic();
 
+        if (currState == jumpStates.JUMP_MID && my_sm.rigidBody.linearVelocity.y < 0)
+        {
+            currState = jumpStates.JUMP_FALL;
+        }
+
         horizontalInput = my_sm.inputAction_move.ReadValue<Vector2>().x;
 
         handleStateInputs();
 
-        handleOtherCases(); //jumps not always start or end the same way
+        //handleOtherCases(); //jumps not always start or end the same way
 
         handleInternalJumpState();
          
@@ -55,9 +72,9 @@ public class jump_state : FSM_BaseState
     {
         base.UpdatePhysics();
 
-        Vector2 velDir = my_sm.rigidBody.velocity;
+        Vector2 velDir = my_sm.rigidBody.linearVelocity;
         velDir.x = my_sm.speed * horizontalInput;
-        my_sm.rigidBody.velocity = velDir;
+        my_sm.rigidBody.linearVelocity = velDir;
 
         if (jumpNow)
         {
@@ -71,13 +88,14 @@ public class jump_state : FSM_BaseState
         base.Exit();
         jumpNow = false;
         jumping = false;
+        rollInputJump = false;
     }
 
     public void jump()
     {
-        Vector2 velDir = my_sm.rigidBody.velocity;
+        Vector2 velDir = my_sm.rigidBody.linearVelocity;
         velDir.y = my_sm.jumpForce;
-        my_sm.rigidBody.velocity = velDir;
+        my_sm.rigidBody.linearVelocity = velDir;
 
         jumpNow = false;
         jumping = true;
@@ -85,17 +103,33 @@ public class jump_state : FSM_BaseState
 
     public void handleOtherCases()
     {
+
+        //FALL FROM EDGE, NO INPUT FOR A JUMP
         if (my_sm.previousState.jumpInput == false && currState == jumpStates.JUMP)//didn't press jump but in the air ( falling from edge)
         {
             currState = jumpStates.JUMP_FALL;
         }
-        else if (my_sm.previousState == my_sm.dash && !falling)
+
+
+        //FALL AFTER DASH
+        else if (my_sm.previousState == my_sm.dash && !fallingStage)
         {
+
             currState = jumpStates.JUMP_FALL;
+
         }
-        else if (my_sm.previousState == my_sm.roll && !falling)
+        else if (my_sm.previousState.jumpInput == false && my_sm.previousState == my_sm.roll && !fallingStage)//roll decide that character is not grounded
         {
+
             currState = jumpStates.JUMP_FALL;
+
+        }else if (rollInputJump && my_sm.previousState == my_sm.roll)//jump pressed while roll
+        {
+
+            rollInputJump = false;
+            my_sm.previousState.jumpInput = false;
+            currState = jumpStates.JUMP;
+
         }
 
         if (currState == jumpStates.JUMP_MID && my_sm.grounded && my_sm.previousState.jumpInput == true)//go to land if jump to higher object
@@ -116,11 +150,11 @@ public class jump_state : FSM_BaseState
         //   ### --- ###
         if ((currState != jumpStates.JUMP_LAND && currState != jumpStates.JUMP) && my_sm.inputAction_jump.triggered)
         {
-            if (!doubleJumping && my_sm.energySlider.currValue_>doubleJumpEnergy)
+            if (!doubleJumping && my_sm.energySlider.currValue_>my_sm.doubleJumpEnergy)
             {
                 currState = jumpStates.JUMP;
                 doubleJump = true;
-                my_sm.energySlider.modifyEnergyValue(-doubleJumpEnergy);
+                my_sm.energySlider.modifyEnergyValue(-my_sm.doubleJumpEnergy);
             }     
         }
 
@@ -170,13 +204,13 @@ public class jump_state : FSM_BaseState
                 }
             case jumpStates.JUMP_RISE:
                 {
-                    if (!rising)
+                    if (!risingStage)
                     {
-                        rising = true;
+                        risingStage = true;
                         my_sm.animator.Play("jump_rise", 0);
                     }
 
-                    if (my_sm.rigidBody.velocity.y < my_sm.jumpForce / 5)
+                    if (my_sm.rigidBody.linearVelocity.y < my_sm.jumpForce / 5)
                     {
                         currState = jumpStates.JUMP_MID;
 
@@ -188,11 +222,12 @@ public class jump_state : FSM_BaseState
                 {
                     if (!jumpingMid)
                     {
+                        risingStage = false;
                         my_sm.animator.Play("jump_mid", 0);
                         jumpingMid = true;
                     }
 
-                    if (Mathf.Abs(my_sm.rigidBody.velocity.y) > my_sm.jumpForce / 2 && !my_sm.grounded)
+                    if (Mathf.Abs(my_sm.rigidBody.linearVelocity.y) > my_sm.jumpForce / 2 && !my_sm.grounded)
                     {
                         currState = jumpStates.JUMP_FALL;
                     }
@@ -200,19 +235,19 @@ public class jump_state : FSM_BaseState
                 }
             case jumpStates.JUMP_FALL:
                 {
-                    if (!falling)
+                    if (!fallingStage)
                     {
-                        falling = true;
+                        fallingStage = true;
                     }
 
                     if (horizontalInput == 0)
                     {
-                        falling = true;
+                        fallingStage = true;
                         my_sm.animator.Play("jump_mid"); // falling vertically
                     }
                     else if (horizontalInput != 0)
                     {
-                        falling = true;
+                        fallingStage = true;
                         my_sm.animator.Play("jump_fall");// falling foreward
                     }
 
