@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Pathfinding;
+
 
 public enum State
 {
@@ -50,13 +50,22 @@ public class Enemy : Entity
         return Vector2.Distance(player.transform.position, this.transform.position);
     }
 
-    public bool isPlayerVisible()
+    public bool isPlayerVisible(float distance_)
     {
-        return calculateVisibility(playerGObj, this.gameObject);
+        return calculateVisibility(playerGObj, this.gameObject,distance_);
     }
 
-    public bool calculateVisibility(GameObject gObjToBeSeen, GameObject gObjToLook)
+    public bool calculateVisibility(GameObject gObjToBeSeen, GameObject gObjToLook, float distance_)
     {
+        bool ret = true;
+
+        if(distance_ > visionRange)
+        {
+            ret = false;
+        }
+
+        //here create lines or maybe better rectangle to see if enemy can see you (a line could barely fit a hole and tell the enemy that can see u)
+
         return true;
     }
 }

@@ -1,8 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem.Android;
-using Pathfinding;
+
 public class Enemy_0 : Enemy
 {
 
@@ -36,7 +35,7 @@ public class Enemy_0 : Enemy
         timeSinceLastCombo = 0f;
 
         playerVisible = false;
-
+        
         wanderArround = true;
         chasePlayer = false;
         attackPlayer = false;
@@ -52,7 +51,7 @@ public class Enemy_0 : Enemy
     void FixedUpdate()
     {
         distanceToPlayer = playerDistance(playerGObj);
-        playerVisible = isPlayerVisible();
+        playerVisible = isPlayerVisible(distanceToPlayer);
         timeSinceLastCombo = Time.time - lastComboTime;
         lookToPlayer();
 
