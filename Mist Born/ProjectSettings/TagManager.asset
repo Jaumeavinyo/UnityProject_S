@@ -2,7 +2,7 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!78 &1
 TagManager:
-  serializedVersion: 2
+  serializedVersion: 3
   tags:
   - Entity
   layers:
@@ -12,8 +12,8 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
+  - BackGround
+  - Enviro
   - Entities
   - obstacle
   - Player
@@ -42,9 +42,17 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: BG_0
-    uniqueID: 1402417011
+  - name: BackGround
+    uniqueID: 3171104977
     locked: 0
-  - name: FrontLayer
-    uniqueID: 1452552511
+  - name: Enviro
+    uniqueID: 2847478835
     locked: 0
+  - name: Enemies
+    uniqueID: 2241033813
+    locked: 0
+  - name: Player
+    uniqueID: 3483997665
+    locked: 0
+  m_RenderingLayers:
+  - Default
