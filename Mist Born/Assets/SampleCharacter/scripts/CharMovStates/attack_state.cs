@@ -1,13 +1,16 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+
 
 public class attack_state : FSM_BaseState
 {
     private FSM_CharMov my_sm;
 
     public bool typeHeavy;
-    private int currComboAttack;
+    private int currCombo1Attack;
     private bool newAttackRequested;
 
     public int lightAttackEnergy;
@@ -25,7 +28,7 @@ public class attack_state : FSM_BaseState
 
         typeHeavy = false;
 
-        currComboAttack = 0;
+        currCombo1Attack = 0;
         newAttackRequested = false;
 
         lightAttackEnergy = 180;
@@ -39,7 +42,8 @@ public class attack_state : FSM_BaseState
         handleStateInputs();
 
         if (typeHeavy)
-        {            
+        {
+            currCombo1Attack = 2; //automatic heavy atatck, so anim event that will activate collider knows the attackinfo
             if(my_sm.animator.GetCurrentAnimatorStateInfo(0).IsName("heavy_attack") == false && my_sm.energySlider.currValue_ > heavyAttackEnergy)//instant change to anim heavy attack
             {
                 my_sm.animator.Play("heavy_attack");
@@ -65,10 +69,10 @@ public class attack_state : FSM_BaseState
                 if ((my_sm.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1.0f && my_sm.animator.GetCurrentAnimatorStateInfo(0).IsName("combo_attack_1")))//prev attack not finished
                 {
 
-                    lightAttack(currComboAttack);
+                    lightAttack(currCombo1Attack);
                 }else if (!my_sm.animator.GetCurrentAnimatorStateInfo(0).IsName("combo_attack_1"))//instant change to anim light attack
                 {
-                    lightAttack(currComboAttack);
+                    lightAttack(currCombo1Attack);
                 }
             }
             else if(my_sm.energySlider.currValue_ < lightAttackEnergy && my_sm.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1)
@@ -81,6 +85,7 @@ public class attack_state : FSM_BaseState
 
     void lightAttack(int currAttack)
     {
+        float runAnimTime = my_sm.animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
         switch (currAttack)
         {
             case 0:
@@ -96,12 +101,13 @@ public class attack_state : FSM_BaseState
                     }
                     else if (my_sm.animator.GetCurrentAnimatorStateInfo(0).IsName("combo_attack_1") == true)
                     {
-                        if (my_sm.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1 && newAttackRequested == true)
+                    
+                        if (runAnimTime >= 1 && newAttackRequested == true)
                         {
-                            currComboAttack++;
+                            currCombo1Attack++;
                             newAttackRequested = false;
                         }
-                        if (my_sm.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1 && newAttackRequested == false && currComboAttack == 0)
+                        if (runAnimTime >= 1 && newAttackRequested == false && currCombo1Attack == 0)
                         {
                             chooseStateAfterAttack();
                         }
@@ -122,12 +128,13 @@ public class attack_state : FSM_BaseState
                     }
                     else if (my_sm.animator.GetCurrentAnimatorStateInfo(0).IsName("combo_attack_2") == true)
                     {
-                        if (my_sm.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1 && newAttackRequested == true)
+
+                        if (runAnimTime >= 1 && newAttackRequested == true)
                         {
-                            currComboAttack++;
+                            currCombo1Attack++;
                             newAttackRequested = false;
                         }
-                        if (my_sm.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1 && newAttackRequested == false && currComboAttack == 1)
+                        if (runAnimTime >= 1 && newAttackRequested == false && currCombo1Attack == 1)
                         {
 
                             chooseStateAfterAttack();
@@ -149,7 +156,8 @@ public class attack_state : FSM_BaseState
                     }
                     else
                     {
-                        if (my_sm.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1)
+
+                        if (runAnimTime >= 1)
                         {
                             chooseStateAfterAttack();
                         }
@@ -159,6 +167,36 @@ public class attack_state : FSM_BaseState
         }
     }
 
+    Attack getAttackInfo(int currcomboattac)//currcomboattack num is the same as type
+    {
+        foreach (Attack element in my_sm.attackDefinitions)
+        {          
+            if((int)element.type == currcomboattac)
+            {
+                return element;
+            }
+        }
+        return my_sm.attackDefinitions[0];
+    }
+    // This can be called by animation events
+    public void ActivateAttackCollider()
+    {
+        Attack attack = getAttackInfo(currCombo1Attack);
+
+        Vector3 AttackDirectionCorrection = new Vector3(attack.collider.pos.x * my_sm.directionInput, attack.collider.pos.y,0.0f);
+
+
+        my_sm.attackCollider2D.transform.localPosition = AttackDirectionCorrection;
+        my_sm.attackCollider2D.size = attack.collider.size;
+
+        my_sm.attackGameObj.SetActive(true);
+        
+    }
+
+    public void DeactivateAttackCollider()
+    {
+        my_sm.attackGameObj.SetActive(false);
+    }
     void chooseStateAfterAttack()
     {
         if(my_sm.lastDirectionInput == 0.0f)

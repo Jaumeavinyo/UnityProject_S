@@ -20,6 +20,10 @@ public class EnemyBoss : MonoBehaviour
     public SpriteRenderer spriteRenderer;
     public Animator animator;
     public Rigidbody2D rb;
+    public BoxCollider2D bossBoxCollider;
+
+    public GameObject groundSlamCollider;
+    public float groundSlamColliderPosX;
 
     Vector3 spawnPos;
 
@@ -53,6 +57,9 @@ public class EnemyBoss : MonoBehaviour
 
     void FixedUpdate()
     {
+
+        float runAnimTime = animator.GetCurrentAnimatorStateInfo(0).normalizedTime % 1;
+
         switch (currBossState)
         {
             case BossState.WANDERING:
@@ -66,7 +73,7 @@ public class EnemyBoss : MonoBehaviour
                     //leg pulls from: 8- 11
                     //leg lands in 6-7
                     float speedmultiplyer = 1.0f;
-                    float runAnimTime = animator.GetCurrentAnimatorStateInfo(0).normalizedTime % 1;
+                    
                     //when leg pulling
                     if (animator.GetCurrentAnimatorStateInfo(0).IsName("Boss_Run") && runAnimTime > 0.72f)//8/100*8(the frame)
                     {
@@ -86,14 +93,23 @@ public class EnemyBoss : MonoBehaviour
                 }
             case BossState.ATTACK:
                 {
+                    
+
                     if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Boss_LegSlam"))
                     {
                         bAttackNow = true;
-                    }else if(animator.GetCurrentAnimatorStateInfo(0).IsName("Boss_LegSlam") && animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1.0f)
+                    }else if(animator.GetCurrentAnimatorStateInfo(0).IsName("Boss_LegSlam") && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
                     {
                         checkBossState();
                     }
 
+                    if(animator.GetCurrentAnimatorStateInfo(0).IsName("Boss_LegSlam") && (runAnimTime > 0.28f && runAnimTime < 0.45f))//17 frames, toca suelo en el 5
+                    {
+                        groundSlamCollider.SetActive(true);
+                    }else if(animator.GetCurrentAnimatorStateInfo(0).IsName("Boss_LegSlam") && (runAnimTime < 0.28f || runAnimTime > 0.45f))
+                    {
+                        groundSlamCollider.SetActive(false);
+                    }
 
                     break;
                 }        
@@ -178,15 +194,44 @@ public class EnemyBoss : MonoBehaviour
 
     void SetSpriteDirection()
     {
-        if ((this.transform.position.x - player.transform.position.x) > 0.0)
+        if ((this.transform.position.x - player.transform.position.x) > 0.0f)
         {
+            // Facing left
             gameObject.transform.localScale = new Vector3(-1, 1, 1);
             moveDir = -1;
+            groundSlamColliderPosX = this.transform.position.x - 3.0f;
         }
         else
         {
+            // Facing right
             gameObject.transform.localScale = new Vector3(1, 1, 1);
             moveDir = 1;
+            groundSlamColliderPosX = this.transform.position.x + 3.0f;
+        }
+
+        float SlamColliderY = transform.position.y - bossBoxCollider.bounds.size.y + groundSlamCollider.GetComponent<BoxCollider2D>().bounds.size.y;
+        groundSlamCollider.transform.position = new Vector3(groundSlamColliderPosX, SlamColliderY, this.transform.position.z);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player"))
+        {
+            player.healthSlider.UpdateSliderValue(30);
+            
+            //info for the character knockback
+            if(gameObject.transform.position.x - player.gameObject.transform.position.x > 0)//boss is right to the player
+            {
+                player.attackingEnemyDir = -1.0f;
+            }
+            else
+            {
+                player.attackingEnemyDir = 1.0f;
+            }
+            
+            player.ChangeState(player.knockback);
+            
+            
         }
     }
 }

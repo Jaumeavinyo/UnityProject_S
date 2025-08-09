@@ -11,6 +11,28 @@ public enum grabb
     topRightGrabb
 }
 
+public enum AttackType
+{
+    COMBO1_1,//combo 1 anim
+    COMBO1_2,//combo 2 anim
+    COMBO1_3_HEAVY,//heavy 1 anim
+    HEAVY1
+}
+
+[System.Serializable]
+public class AttackCollider
+{
+    public Vector2 pos;
+    public Vector2 size;
+}
+
+[System.Serializable]
+public class Attack
+{
+    public AttackType type;
+    public AttackCollider collider;
+}
+
 public class FSM_CharMov : FSM
 {
 
@@ -22,21 +44,35 @@ public class FSM_CharMov : FSM
     public InputAction      inputAction_heavy_attack;
     public InputAction      inputAction_light_attack;
 
-    public idle_state       idle;
-    public run_state        run;
-    public jump_state       jump;
-    public dash_state       dash;
-    public roll_state       roll;
-    public attack_state     attack;
+    public idle_state        idle;
+    public run_state         run;
+    public jump_state        jump;
+    public dash_state        dash;
+    public roll_state        roll;
+    public attack_state      attack;
     public wallJumping_state wallJump;
+    public knockback_state   knockback;
+
+    [Header("Attack Definitions")]
+    public List<Attack> attackDefinitions;
 
     public Rigidbody2D          rigidBody;
     public Animator             animator;
+    public SpriteRenderer spriteRenderer;
     public CapsuleCollider2D    capsuleCollider;
 
+    public GameObject attackGameObj;
+    public BoxCollider2D attackCollider2D;
+
+
     public energySlider energySlider;
+    public HealthSlider healthSlider;
+
     public characterSFX audioSFX;
 
+    public float attackingEnemyDir;
+
+    public bool Alive = true;
     public float playerHP = 100;
 
     public float        speed = 5;
@@ -57,6 +93,10 @@ public class FSM_CharMov : FSM
     public bool         topGrab;
     public bool         bottomGrab;
 
+    bool deathMovementApplied = false;
+    public float deathKnockbackVelocity=0;
+    public float KnockbackVelocity=0;
+
     private void Awake()
     {
 
@@ -65,6 +105,7 @@ public class FSM_CharMov : FSM
         rigidBody = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         capsuleCollider = GetComponent<CapsuleCollider2D>();
+        attackCollider2D = attackGameObj.GetComponent<BoxCollider2D>();
 
         idle = new idle_state(this);
         run = new run_state(this);
@@ -72,6 +113,7 @@ public class FSM_CharMov : FSM
         dash = new dash_state(this);
         roll = new roll_state(this);
         attack = new attack_state(this);
+        knockback = new knockback_state(this);
 
 
         grounded = isGrounded();
@@ -87,17 +129,20 @@ public class FSM_CharMov : FSM
 
     public override void Update()
     {
+
+      
+        if(currentState != knockback)
+        {
+            if (inputAction_move.ReadValue<Vector2>().x > 0)
+            {
+                directionInput = 1;
+            }
+            else if (inputAction_move.ReadValue<Vector2>().x < 0)
+            {
+                directionInput = -1;
+            }
+        }
         
-
-        if (inputAction_move.ReadValue<Vector2>().x > 0)
-        {
-            directionInput = 1;
-        }
-        else if (inputAction_move.ReadValue<Vector2>().x < 0)
-        {
-            directionInput = -1;
-        }
-
         setDirection();
 
         grounded = isGrounded();
@@ -116,7 +161,7 @@ public class FSM_CharMov : FSM
         {
             rigidBody.gravityScale = 1.5f;
         }
-
+               
     }
 
     protected override FSM_BaseState getInitialState()
@@ -250,6 +295,14 @@ public class FSM_CharMov : FSM
     {
         return currentState;
     }
+
+    public void Die()
+    {
+        Alive = false;
+        ChangeState(knockback);
+    }
+
+   
 
     private void OnEnable()
     {

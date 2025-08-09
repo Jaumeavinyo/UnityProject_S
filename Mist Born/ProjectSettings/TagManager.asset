@@ -17,8 +17,8 @@ TagManager:
   - Entities
   - obstacle
   - Player
-  - 
-  - 
+  - EnemyAttack
+  - PlayerAttack
   - 
   - 
   - 
@@ -42,8 +42,14 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: BackGround
+  - name: BackGround0
     uniqueID: 3171104977
+    locked: 0
+  - name: BackGround1
+    uniqueID: 747593903
+    locked: 0
+  - name: BackGround2
+    uniqueID: 3948592173
     locked: 0
   - name: Enviro
     uniqueID: 2847478835
