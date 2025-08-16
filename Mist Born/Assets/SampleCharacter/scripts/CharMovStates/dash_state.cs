@@ -40,6 +40,7 @@ public class dash_state : FSM_BaseState
         if (!dashing && my_sm.energySlider.currValue_>dashEnergy)
         {
             dashing = true;
+            my_sm.setInvulnerability(dashing);
             dash(horizontalDash);
             my_sm.animator.Play("dash");
             my_sm.energySlider.modifyEnergyValue(-dashEnergy);
@@ -47,11 +48,13 @@ public class dash_state : FSM_BaseState
         }
         else if(!dashing && my_sm.energySlider.currValue_ < dashEnergy)
         {
+            my_sm.setInvulnerability(dashing);
             my_sm.ChangeState(my_sm.idle);
         }
 
         if (dashing && my_sm.animator.GetCurrentAnimatorStateInfo(0).IsName("dash") && my_sm.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1.0f)
         {
+            dashing = false;
             chooseStateAfterDash();
         }
                     
@@ -77,6 +80,7 @@ public class dash_state : FSM_BaseState
 
     public void chooseStateAfterDash()
     {
+        my_sm.setInvulnerability(dashing);
         if (horizontalInput != 0)
         {
             if (!my_sm.grounded)

@@ -64,11 +64,14 @@ public class EnemyBoss : MonoBehaviour
         {
             case BossState.WANDERING:
                 {
+                    SetSpriteDirection();
                     checkBossState();
                     break;
                 }
             case BossState.CHASE:
                 {
+                    groundSlamCollider.SetActive(false);
+                    SetSpriteDirection();
                     //total num of frames: 11
                     //leg pulls from: 8- 11
                     //leg lands in 6-7
@@ -144,7 +147,7 @@ public class EnemyBoss : MonoBehaviour
                 }
             case BossState.ATTACK:
                 {
-                    if(Mathf.Abs(player.transform.position.x - this.transform.position.x) > meleeAttackDistance)
+                    if(Mathf.Abs(player.transform.position.x - this.transform.position.x) > meleeAttackDistance && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >=1)
                     {
                         currBossState = BossState.CHASE;
                     }

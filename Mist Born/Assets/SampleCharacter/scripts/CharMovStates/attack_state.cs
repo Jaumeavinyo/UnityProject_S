@@ -183,13 +183,17 @@ public class attack_state : FSM_BaseState
     {
         Attack attack = getAttackInfo(currCombo1Attack);
 
-        Vector3 AttackDirectionCorrection = new Vector3(attack.collider.pos.x * my_sm.directionInput, attack.collider.pos.y,0.0f);
+        Vector2 AttackDirectionCorrection;
 
+    
+        AttackDirectionCorrection = new Vector2(attack.collider.offset.x, attack.collider.offset.y);
+        
 
-        my_sm.attackCollider2D.transform.localPosition = AttackDirectionCorrection;
+        my_sm.attackCollider2D.offset = AttackDirectionCorrection;      
         my_sm.attackCollider2D.size = attack.collider.size;
 
         my_sm.attackGameObj.SetActive(true);
+       
         
     }
 

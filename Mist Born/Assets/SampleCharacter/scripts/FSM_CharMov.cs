@@ -22,7 +22,7 @@ public enum AttackType
 [System.Serializable]
 public class AttackCollider
 {
-    public Vector2 pos;
+    public Vector2 offset;
     public Vector2 size;
 }
 
