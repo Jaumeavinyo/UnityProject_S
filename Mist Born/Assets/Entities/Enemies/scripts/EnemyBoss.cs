@@ -1,4 +1,5 @@
 using JetBrains.Annotations;
+using NUnit.Framework;
 using UnityEngine;
 
 public enum BossState
@@ -22,20 +23,23 @@ public class EnemyBoss : MonoBehaviour
     public Rigidbody2D rb;
     public BoxCollider2D bossBoxCollider;
 
-    public GameObject groundSlamCollider;
+    public BoxCollider2D groundSlamCollider;
     public float groundSlamColliderPosX;
 
     Vector3 spawnPos;
 
     float moveDir;
-    bool bAttackNow;
+    bool bMoveDir;
+    
     public float runAnimationSpeedCorrectionLegPull;
     public float runAnimationSpeedCorrectionLegLand;
     public float spotDistance;
     public float meleeAttackDistance;
     public float chaseSpeed;
 
-
+    float lastAttackTime;
+    bool bAttackNowMelee;
+   // 
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -45,12 +49,18 @@ public class EnemyBoss : MonoBehaviour
 
         spawnPos = gameObject.transform.position;
 
-        bAttackNow = false;
+        bAttackNowMelee = false;
+        bMoveDir = true;
+        
     }
 
     void Update()
     {
-        SetSpriteDirection();//should not be called if in the middle of a attack or action
+        if (bMoveDir)
+        {
+            SetSpriteDirection();
+        }
+       
         SetCurrentAnim();
         
     }
@@ -70,7 +80,7 @@ public class EnemyBoss : MonoBehaviour
                 }
             case BossState.CHASE:
                 {
-                    groundSlamCollider.SetActive(false);
+                    groundSlamCollider.enabled = false;
                     SetSpriteDirection();
                     //total num of frames: 11
                     //leg pulls from: 8- 11
@@ -98,21 +108,17 @@ public class EnemyBoss : MonoBehaviour
                 {
                     
 
-                    if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Boss_LegSlam"))
+                    if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Boss_LegSlam") && !animator.GetCurrentAnimatorStateInfo(0).IsName("Boss_FireThrower") && !bAttackNowMelee)
                     {
-                        bAttackNow = true;
-                    }else if(animator.GetCurrentAnimatorStateInfo(0).IsName("Boss_LegSlam") && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
+                        bAttackNowMelee = true;
+                        bMoveDir = false;
+                    }
+                    else if((animator.GetCurrentAnimatorStateInfo(0).IsName("Boss_LegSlam") || animator.GetCurrentAnimatorStateInfo(0).IsName("Boss_FireThrower")) && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
                     {
                         checkBossState();
+                        bMoveDir = true;
                     }
-
-                    if(animator.GetCurrentAnimatorStateInfo(0).IsName("Boss_LegSlam") && (runAnimTime > 0.28f && runAnimTime < 0.45f))//17 frames, toca suelo en el 5
-                    {
-                        groundSlamCollider.SetActive(true);
-                    }else if(animator.GetCurrentAnimatorStateInfo(0).IsName("Boss_LegSlam") && (runAnimTime < 0.28f || runAnimTime > 0.45f))
-                    {
-                        groundSlamCollider.SetActive(false);
-                    }
+             
 
                     break;
                 }        
@@ -128,7 +134,9 @@ public class EnemyBoss : MonoBehaviour
                 {
                     if(Mathf.Abs(player.transform.position.x - this.transform.position.x) < spotDistance)
                     {
+                        prevBossState = currBossState;
                         currBossState = BossState.CHASE;
+                        saveLastAttackTime();
                     }
                     break;
                 }
@@ -137,10 +145,16 @@ public class EnemyBoss : MonoBehaviour
 
                     if (Mathf.Abs(player.transform.position.x - this.transform.position.x) < meleeAttackDistance)
                     {
+                        prevBossState = currBossState;
                         currBossState = BossState.ATTACK;
                         Vector2 velDir = rb.linearVelocity;
                         velDir.x = 0.0f;
                         rb.linearVelocity = velDir;
+                    }
+
+                    if(UnityEngine.Time.time - lastAttackTime > 4.0)
+                    {
+                        //here the jump
                     }
 
                     break;
@@ -149,7 +163,9 @@ public class EnemyBoss : MonoBehaviour
                 {
                     if(Mathf.Abs(player.transform.position.x - this.transform.position.x) > meleeAttackDistance && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >=1)
                     {
+                        prevBossState = currBossState;
                         currBossState = BossState.CHASE;
+                        saveLastAttackTime();
                     }
 
 
@@ -183,10 +199,21 @@ public class EnemyBoss : MonoBehaviour
                 }
             case BossState.ATTACK:
                 {
-                    if (bAttackNow)
+                    if (bAttackNowMelee)
                     {
-                        animator.Play("Boss_LegSlam");                       
-                        bAttackNow = false;
+                        float rand = UnityEngine.Random.Range(1, 10);
+                        if (rand > 6)
+                        {
+                            animator.Play("Boss_FireThrower");
+                            bAttackNowMelee = false;
+                        }
+                        else
+                        {
+                            animator.Play("Boss_LegSlam");
+                            bAttackNowMelee = false;
+                        }
+                       
+                        
                     }
 
 
@@ -195,7 +222,7 @@ public class EnemyBoss : MonoBehaviour
         }
     }
 
-    void SetSpriteDirection()
+    void SetSpriteDirection()//TODO THE PROBLEM WITH COLLIDER DIR FOR ATTACKS IS THIS IS NOT CALLED WHILE ATTACKING
     {
         if ((this.transform.position.x - player.transform.position.x) > 0.0f)
         {
@@ -213,7 +240,12 @@ public class EnemyBoss : MonoBehaviour
         }
 
         float SlamColliderY = transform.position.y - bossBoxCollider.bounds.size.y + groundSlamCollider.GetComponent<BoxCollider2D>().bounds.size.y;
-        groundSlamCollider.transform.position = new Vector3(groundSlamColliderPosX, SlamColliderY, this.transform.position.z);
+        groundSlamCollider.transform.position = new Vector3(groundSlamColliderPosX, groundSlamCollider.GetComponent<BoxCollider2D>().transform.position.y, this.transform.position.z);
+    }
+
+    void saveLastAttackTime()
+    {
+        lastAttackTime = UnityEngine.Time.time;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
