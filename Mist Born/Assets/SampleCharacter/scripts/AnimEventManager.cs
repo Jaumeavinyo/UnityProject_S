@@ -9,7 +9,7 @@ public class AnimEventManager : MonoBehaviour
 
     void Start()
     {
-        
+        attackColliderDeactivationEvent();
     }
 
     // Update is called once per frame

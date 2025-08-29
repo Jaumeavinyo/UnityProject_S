@@ -73,7 +73,7 @@ public class FSM_CharMov : FSM
     public float attackingEnemyDir;
 
     public bool Alive = true;
-    public float playerHP = 100;
+    public float playerHP = 1000;
 
     public float        speed = 5;
     public float        dashSpeed = 10;

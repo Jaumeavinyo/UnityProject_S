@@ -25,11 +25,11 @@ public class BossAnimEventManager : MonoBehaviour
 
     public void FireThrowerColliderActivation()
     {
-
+        boss.fireThrowerCollider.enabled = true;
     }
     public void FireThrowerColliderDeactivation()
     {
-
+        boss.fireThrowerCollider.enabled = false;
     }
 
     public void JumpSlamColliderActivation()

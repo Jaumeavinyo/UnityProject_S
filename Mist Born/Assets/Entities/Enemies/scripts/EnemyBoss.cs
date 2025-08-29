@@ -7,7 +7,8 @@ public enum BossState
     NONE,
     WANDERING,
     CHASE,
-    ATTACK
+    ATTACK,
+    JUMP
 }
 
 
@@ -26,6 +27,11 @@ public class EnemyBoss : MonoBehaviour
     public BoxCollider2D groundSlamCollider;
     public float groundSlamColliderPosX;
 
+    public BoxCollider2D fireThrowerCollider;
+    public float fireThrowerColliderPosX;
+
+    public BossHealthSlider healthSlider;
+
     Vector3 spawnPos;
 
     float moveDir;
@@ -39,7 +45,9 @@ public class EnemyBoss : MonoBehaviour
 
     float lastAttackTime;
     bool bAttackNowMelee;
-   // 
+
+    int numberOfHitsTakenCurrState;
+
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -51,15 +59,18 @@ public class EnemyBoss : MonoBehaviour
 
         bAttackNowMelee = false;
         bMoveDir = true;
-        
+
+        groundSlamCollider.enabled = false;
+        fireThrowerCollider.enabled = false;
     }
 
     void Update()
     {
-        if (bMoveDir)
-        {
-            SetSpriteDirection();
-        }
+        //if (bMoveDir)
+        //{
+        //    SetSpriteDirection();
+        //}
+
        
         SetCurrentAnim();
         
@@ -80,11 +91,10 @@ public class EnemyBoss : MonoBehaviour
                 }
             case BossState.CHASE:
                 {
-                    groundSlamCollider.enabled = false;
+                    //groundSlamCollider.enabled = false;
+                    //fireThrowerCollider.enabled = false;
                     SetSpriteDirection();
-                    //total num of frames: 11
-                    //leg pulls from: 8- 11
-                    //leg lands in 6-7
+                   
                     float speedmultiplyer = 1.0f;
                     
                     //when leg pulling
@@ -105,15 +115,13 @@ public class EnemyBoss : MonoBehaviour
                     break;
                 }
             case BossState.ATTACK:
-                {
-                    
-
+                {                   
                     if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Boss_LegSlam") && !animator.GetCurrentAnimatorStateInfo(0).IsName("Boss_FireThrower") && !bAttackNowMelee)
                     {
                         bAttackNowMelee = true;
                         bMoveDir = false;
                     }
-                    else if((animator.GetCurrentAnimatorStateInfo(0).IsName("Boss_LegSlam") || animator.GetCurrentAnimatorStateInfo(0).IsName("Boss_FireThrower")) && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
+                    else if((animator.GetCurrentAnimatorStateInfo(0).IsName("Boss_LegSlam") || animator.GetCurrentAnimatorStateInfo(0).IsName("Boss_FireThrower")) && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.99f)
                     {
                         checkBossState();
                         bMoveDir = true;
@@ -121,7 +129,12 @@ public class EnemyBoss : MonoBehaviour
              
 
                     break;
-                }        
+                }
+            case BossState.JUMP:
+                {
+
+                    break;
+                }
         }
     }
 
@@ -202,7 +215,7 @@ public class EnemyBoss : MonoBehaviour
                     if (bAttackNowMelee)
                     {
                         float rand = UnityEngine.Random.Range(1, 10);
-                        if (rand > 6)
+                        if (rand > 5)
                         {
                             animator.Play("Boss_FireThrower");
                             bAttackNowMelee = false;
@@ -211,18 +224,14 @@ public class EnemyBoss : MonoBehaviour
                         {
                             animator.Play("Boss_LegSlam");
                             bAttackNowMelee = false;
-                        }
-                       
-                        
+                        }                                              
                     }
-
-
                     break;
                 }
         }
     }
 
-    void SetSpriteDirection()//TODO THE PROBLEM WITH COLLIDER DIR FOR ATTACKS IS THIS IS NOT CALLED WHILE ATTACKING
+    void SetSpriteDirection()
     {
         if ((this.transform.position.x - player.transform.position.x) > 0.0f)
         {
@@ -230,6 +239,7 @@ public class EnemyBoss : MonoBehaviour
             gameObject.transform.localScale = new Vector3(-1, 1, 1);
             moveDir = -1;
             groundSlamColliderPosX = this.transform.position.x - 3.0f;
+            fireThrowerColliderPosX = this.transform.position.x - 3.0f;
         }
         else
         {
@@ -237,36 +247,24 @@ public class EnemyBoss : MonoBehaviour
             gameObject.transform.localScale = new Vector3(1, 1, 1);
             moveDir = 1;
             groundSlamColliderPosX = this.transform.position.x + 3.0f;
+            fireThrowerColliderPosX = this.transform.position.x + 3.0f;
         }
 
         float SlamColliderY = transform.position.y - bossBoxCollider.bounds.size.y + groundSlamCollider.GetComponent<BoxCollider2D>().bounds.size.y;
         groundSlamCollider.transform.position = new Vector3(groundSlamColliderPosX, groundSlamCollider.GetComponent<BoxCollider2D>().transform.position.y, this.transform.position.z);
+
+        float fireColliderY = transform.position.y - (bossBoxCollider.bounds.size.y / 2) + fireThrowerCollider.GetComponent<BoxCollider2D>().bounds.size.y;
+        fireThrowerCollider.transform.position = new Vector3(fireThrowerColliderPosX, fireThrowerCollider.GetComponent<BoxCollider2D>().transform.position.y, this.transform.position.z);
     }
 
+  
     void saveLastAttackTime()
     {
         lastAttackTime = UnityEngine.Time.time;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    public void Die()
     {
-        if (collision.CompareTag("Player"))
-        {
-            player.healthSlider.UpdateSliderValue(30);
-            
-            //info for the character knockback
-            if(gameObject.transform.position.x - player.gameObject.transform.position.x > 0)//boss is right to the player
-            {
-                player.attackingEnemyDir = -1.0f;
-            }
-            else
-            {
-                player.attackingEnemyDir = 1.0f;
-            }
-            
-            player.ChangeState(player.knockback);
-            
-            
-        }
+
     }
 }
