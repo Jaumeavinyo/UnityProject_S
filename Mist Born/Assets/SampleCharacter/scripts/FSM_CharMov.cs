@@ -97,6 +97,7 @@ public class FSM_CharMov : FSM
     public float deathKnockbackVelocity=0;
     public float KnockbackVelocity=0;
 
+    
     private void Awake()
     {
 
@@ -302,7 +303,17 @@ public class FSM_CharMov : FSM
         ChangeState(knockback);
     }
 
-   
+    public IEnumerator FreezeAnimation(float t)
+    {  
+        float originalSpeed = animator.speed;
+        animator.speed = 0f;
+        
+        yield return new WaitForSeconds(t);
+
+        animator.speed = originalSpeed;   
+    }
+
+
 
     private void OnEnable()
     {

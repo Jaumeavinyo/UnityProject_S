@@ -23,6 +23,11 @@ public class BossAnimEventManager : MonoBehaviour
         boss.groundSlamCollider.enabled = false;
     }
 
+    public void GroundSlamGetDamageColliderPositionChange(float offsetX)
+    {
+        boss.SetDamageColliderOffsetChange(offsetX);
+    }
+
     public void FireThrowerColliderActivation()
     {
         boss.fireThrowerCollider.enabled = true;

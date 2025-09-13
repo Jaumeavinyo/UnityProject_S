@@ -9,10 +9,29 @@ public class PlayerApplyDamageCollider : MonoBehaviour
     {
         if (collision.CompareTag("Enemy"))
         {
-            Enemy.healthSlider.UpdateSliderValue(30);
+            Debug.Log("Collided with: " + collision.name);
+            if (Enemy.animator.GetCurrentAnimatorStateInfo(0).IsName("Boss_LegSlam"))
+            {
+                Enemy.healthSlider.UpdateSliderValue(8);
+                StartCoroutine(player.FreezeAnimation(0.2f));
+                StartCoroutine(Enemy.FreezeAnimation(0.2f));
+                
+            }
+            else
+            {
+                Enemy.healthSlider.UpdateSliderValue(3);
+                StartCoroutine(player.FreezeAnimation(0.2f));
+                StartCoroutine(Enemy.FreezeAnimation(0.2f));
+                
+            }
 
-            //here effect of hit
 
+            StartCoroutine(Enemy.SpriteWhiteFlash(0.2f));
+
+            //if(player.attack.currCombo1Attack == 2)//last attack of the 3 attack combo (typeheavy)
+            //{
+            //    Enemy.state
+            //}
 
         }
     }

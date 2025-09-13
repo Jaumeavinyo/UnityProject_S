@@ -19,6 +19,10 @@ public class knockback_state : FSM_BaseState
         base.Enter();
         knocking = false;
         dead = !my_sm.Alive;
+        if (my_sm.attackGameObj.activeSelf)
+        {
+            my_sm.attackGameObj.SetActive(false);//when attack anim gets cut, animevent to deactivate collider does not trigger
+        }
     }
 
     public override void UpdateLogic()

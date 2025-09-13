@@ -21,7 +21,7 @@ public class DamageCollider : MonoBehaviour
             {
                 player.attackingEnemyDir = 1.0f;
             }
-
+            player.attackGameObj.SetActive(false);
             player.ChangeState(player.knockback);
 
 

@@ -1,5 +1,6 @@
 using JetBrains.Annotations;
 using NUnit.Framework;
+using System.Collections;
 using UnityEngine;
 
 public enum BossState
@@ -30,6 +31,11 @@ public class EnemyBoss : MonoBehaviour
     public BoxCollider2D fireThrowerCollider;
     public float fireThrowerColliderPosX;
 
+    public BoxCollider2D getDamageCollider;
+    public float getDamageCollOffsetGroundSlamX; //+1 +-
+    public Material whiteDamageMat;
+    Material originalBossMat;
+
     public BossHealthSlider healthSlider;
 
     Vector3 spawnPos;
@@ -46,7 +52,9 @@ public class EnemyBoss : MonoBehaviour
     float lastAttackTime;
     bool bAttackNowMelee;
 
-    int numberOfHitsTakenCurrState;
+    //jump attack
+    bool jumping;
+    bool falling;
 
     void Start()
     {
@@ -62,6 +70,9 @@ public class EnemyBoss : MonoBehaviour
 
         groundSlamCollider.enabled = false;
         fireThrowerCollider.enabled = false;
+
+        jumping = false;
+        falling = false;
     }
 
     void Update()
@@ -115,18 +126,25 @@ public class EnemyBoss : MonoBehaviour
                     break;
                 }
             case BossState.ATTACK:
-                {                   
+                {
                     if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Boss_LegSlam") && !animator.GetCurrentAnimatorStateInfo(0).IsName("Boss_FireThrower") && !bAttackNowMelee)
                     {
                         bAttackNowMelee = true;
                         bMoveDir = false;
                     }
-                    else if((animator.GetCurrentAnimatorStateInfo(0).IsName("Boss_LegSlam") || animator.GetCurrentAnimatorStateInfo(0).IsName("Boss_FireThrower")) && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.99f)
+                    else if ((animator.GetCurrentAnimatorStateInfo(0).IsName("Boss_LegSlam") || animator.GetCurrentAnimatorStateInfo(0).IsName("Boss_FireThrower")) && runAnimTime >= 0.99f)
                     {
                         checkBossState();
-                        bMoveDir = true;
-                    }
-             
+                        if (currBossState == BossState.CHASE)
+                        {
+                            bMoveDir = true;
+                        }
+                        else
+                        {
+                            animator.Play("Boss_Idle");
+                        }
+
+                    }         
 
                     break;
                 }
@@ -174,13 +192,13 @@ public class EnemyBoss : MonoBehaviour
                 }
             case BossState.ATTACK:
                 {
-                    if(Mathf.Abs(player.transform.position.x - this.transform.position.x) > meleeAttackDistance && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >=1)
+                    if(Mathf.Abs(player.transform.position.x - this.transform.position.x) > meleeAttackDistance && !animator.GetCurrentAnimatorStateInfo(0).IsName("Boss_Idle") && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >=0.99)
                     {
                         prevBossState = currBossState;
                         currBossState = BossState.CHASE;
                         saveLastAttackTime();
                     }
-
+                
 
                     break;
                 }
@@ -228,6 +246,16 @@ public class EnemyBoss : MonoBehaviour
                     }
                     break;
                 }
+            //case BossState.JUMP:
+            //    {
+            //        //enters once at the beggining
+            //        if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Boss_JumpUp") && !animator.GetCurrentAnimatorStateInfo(0).IsName("Boss_JumpDown") && !jumping)
+            //        {
+            //            animator.Play("Boss_JumpUp");
+            //            jumping = true;
+            //        }else if(!animator.GetCurrentAnimatorStateInfo(0).IsName("Boss_JumpDown") && !falling )
+            //        break;
+            //    }
         }
     }
 
@@ -257,7 +285,36 @@ public class EnemyBoss : MonoBehaviour
         fireThrowerCollider.transform.position = new Vector3(fireThrowerColliderPosX, fireThrowerCollider.GetComponent<BoxCollider2D>().transform.position.y, this.transform.position.z);
     }
 
-  
+    public void SetDamageColliderOffsetChange(float offsetX)
+    {
+        getDamageCollider.offset = new Vector2(offsetX, getDamageCollider.offset.y);
+    }
+
+    public void HitWhiteFeedBack(Vector3 color)
+    {
+        
+
+        
+    }
+
+    public IEnumerator SpriteWhiteFlash(float t)
+    {       
+        originalBossMat = spriteRenderer.sharedMaterial;     
+        spriteRenderer.material = whiteDamageMat;
+        yield return new WaitForSeconds(t);
+        spriteRenderer.material = originalBossMat;
+    }
+
+    public IEnumerator FreezeAnimation(float t)
+    {
+        float originalSpeed = animator.speed;
+        animator.speed = 0f;
+
+        yield return new WaitForSeconds(t);
+
+        animator.speed = originalSpeed;
+    }
+
     void saveLastAttackTime()
     {
         lastAttackTime = UnityEngine.Time.time;

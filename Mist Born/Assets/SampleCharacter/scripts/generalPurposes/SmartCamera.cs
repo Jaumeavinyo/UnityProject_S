@@ -36,16 +36,13 @@ Gradually slows down as it approaches the target (e.g., camera follow).
     // Update is called once per frame
     void Update()
     {
-        GetGameAwareness();
+        transform.position = player.transform.position;
         DebugDraws();
     }
 
 
 
-    void GetGameAwareness()
-    {
 
-    }
 
     void DebugDraws()
     {

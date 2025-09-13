@@ -10,7 +10,7 @@ public class attack_state : FSM_BaseState
     private FSM_CharMov my_sm;
 
     public bool typeHeavy;
-    private int currCombo1Attack;
+    public int currCombo1Attack;
     private bool newAttackRequested;
 
     public int lightAttackEnergy;
@@ -205,9 +205,11 @@ public class attack_state : FSM_BaseState
     {
         if(my_sm.lastDirectionInput == 0.0f)
         {
+            my_sm.attackGameObj.SetActive(false);//in case anim is cut by enemy attack or somth
             my_sm.ChangeState(my_sm.idle);
         }else if(my_sm.lastDirectionInput != 0.0f)
         {
+            my_sm.attackGameObj.SetActive(false);//in case anim is cut by enemy attack or somth
             my_sm.ChangeState(my_sm.run);
         }
     }
