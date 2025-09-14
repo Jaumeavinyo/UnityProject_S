@@ -95,9 +95,9 @@ public class attack_state : FSM_BaseState
                         my_sm.animator.Play("combo_attack_1");
                         my_sm.energySlider.modifyEnergyValue(-lightAttackEnergy);
                         my_sm.audioSFX.playSound(my_sm.audioSFX.swordSlash3);
-                        Vector2 velDir = my_sm.rigidBody.linearVelocity;
-                        velDir.x = my_sm.speed * my_sm.lastDirectionInput;
-                        my_sm.rigidBody.linearVelocity = velDir;
+                        //Vector2 velDir = my_sm.rigidBody.linearVelocity;
+                        //velDir.x = my_sm.speed * my_sm.lastDirectionInput;
+                        //my_sm.rigidBody.linearVelocity = velDir;
                     }
                     else if (my_sm.animator.GetCurrentAnimatorStateInfo(0).IsName("combo_attack_1") == true)
                     {
@@ -122,9 +122,9 @@ public class attack_state : FSM_BaseState
                         my_sm.animator.Play("combo_attack_2");
                         my_sm.energySlider.modifyEnergyValue(-lightAttackEnergy);
                         my_sm.audioSFX.playSound(my_sm.audioSFX.swordSlash2);
-                        Vector2 velDir = my_sm.rigidBody.linearVelocity;
-                        velDir.x = my_sm.speed * my_sm.lastDirectionInput;
-                        my_sm.rigidBody.linearVelocity = velDir;
+                        //Vector2 velDir = my_sm.rigidBody.linearVelocity;
+                        //velDir.x = my_sm.speed * my_sm.lastDirectionInput;
+                        //my_sm.rigidBody.linearVelocity = velDir;
                     }
                     else if (my_sm.animator.GetCurrentAnimatorStateInfo(0).IsName("combo_attack_2") == true)
                     {
@@ -150,9 +150,9 @@ public class attack_state : FSM_BaseState
                         my_sm.animator.Play("heavy_attack");
                         my_sm.energySlider.modifyEnergyValue(-lightAttackEnergy);
                         my_sm.audioSFX.playSound(my_sm.audioSFX.swordSlash1);
-                        Vector2 velDir = my_sm.rigidBody.linearVelocity;
-                        velDir.x = my_sm.speed * my_sm.lastDirectionInput;
-                        my_sm.rigidBody.linearVelocity = velDir;
+                        //Vector2 velDir = my_sm.rigidBody.linearVelocity;
+                        //velDir.x = my_sm.speed * my_sm.lastDirectionInput;
+                        //my_sm.rigidBody.linearVelocity = velDir;
                     }
                     else
                     {
@@ -215,27 +215,33 @@ public class attack_state : FSM_BaseState
     }
     public void handleStateInputs()
     {
-      
-        //   ### --- ###
-        jumpInput = my_sm.inputAction_jump.triggered;
-        if (jumpInput == true && my_sm.isGrounded())
+        if (!my_sm.characterFreezed)//freeze anim when hit enemy
         {
-            stateMachine.ChangeState(my_sm.jump);
-        }
+            //   ### --- ###
+            jumpInput = my_sm.inputAction_jump.triggered;
+            if (jumpInput == true && my_sm.isGrounded())
+            {
+                my_sm.attackGameObj.SetActive(false);
+                stateMachine.ChangeState(my_sm.jump);
+            }
 
-        //   ### --- ###
-        dashInput = my_sm.inputAction_dash.triggered;
-        if (dashInput)
-        {
-            stateMachine.ChangeState(my_sm.dash);
-        }
+            //   ### --- ###
+            dashInput = my_sm.inputAction_dash.triggered;
+            if (dashInput)
+            {
+                my_sm.attackGameObj.SetActive(false);
+                stateMachine.ChangeState(my_sm.dash);
+            }
 
-        //   ### --- ###
-        rollInput = my_sm.inputAction_roll.triggered;
-        if (rollInput)
-        {
-            stateMachine.ChangeState(my_sm.roll);
+            //   ### --- ###
+            rollInput = my_sm.inputAction_roll.triggered;
+            if (rollInput)
+            {
+                my_sm.attackGameObj.SetActive(false);
+                stateMachine.ChangeState(my_sm.roll);
+            }
         }
+        
 
         //   ### --- ###
         lightAttackInput = my_sm.inputAction_light_attack.triggered;

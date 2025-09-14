@@ -49937,6 +49937,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1702089925}
   entityManager: {fileID: 1917819754}
+  followStrength: 2
+  maxSpeed: 10
+  cameraForwardOffset: 4
 --- !u!1 &591334099
 GameObject:
   m_ObjectHideFlags: 0
@@ -50415,6 +50418,8 @@ MonoBehaviour:
   spotDistance: 20
   meleeAttackDistance: 3
   chaseSpeed: 2.7
+  waitTimeFallSlam: 1
+  targettingTimeFallSlam: 2
 --- !u!50 &633492541
 Rigidbody2D:
   serializedVersion: 5
@@ -50675,7 +50680,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: -2.3}
+  m_Offset: {x: 0.1, y: -2.3}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -50685,7 +50690,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1.7, y: 1}
   m_EdgeRadius: 0
 --- !u!4 &768732787
 Transform:

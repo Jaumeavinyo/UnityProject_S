@@ -97,6 +97,7 @@ public class FSM_CharMov : FSM
     public float deathKnockbackVelocity=0;
     public float KnockbackVelocity=0;
 
+    public bool characterFreezed;
     
     private void Awake()
     {
@@ -125,7 +126,7 @@ public class FSM_CharMov : FSM
 
         groundDistanceDetection = 0.4f;
         wallDistanceDetection = 0.4f;
-
+        characterFreezed = false;
     }
 
     public override void Update()
@@ -307,9 +308,9 @@ public class FSM_CharMov : FSM
     {  
         float originalSpeed = animator.speed;
         animator.speed = 0f;
-        
+        characterFreezed = true;
         yield return new WaitForSeconds(t);
-
+        characterFreezed = false;
         animator.speed = originalSpeed;   
     }
 

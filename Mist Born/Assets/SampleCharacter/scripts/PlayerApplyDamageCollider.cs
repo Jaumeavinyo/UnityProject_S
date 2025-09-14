@@ -28,10 +28,10 @@ public class PlayerApplyDamageCollider : MonoBehaviour
 
             StartCoroutine(Enemy.SpriteWhiteFlash(0.2f));
 
-            //if(player.attack.currCombo1Attack == 2)//last attack of the 3 attack combo (typeheavy)
-            //{
-            //    Enemy.state
-            //}
+            if (player.attack.currCombo1Attack == 2)//last attack of the 3 attack combo (typeheavy)
+            {
+                Enemy.changeBossState(BossState.JUMP);
+            }
 
         }
     }

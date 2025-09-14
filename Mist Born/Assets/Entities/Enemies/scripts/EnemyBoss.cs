@@ -9,7 +9,8 @@ public enum BossState
     WANDERING,
     CHASE,
     ATTACK,
-    JUMP
+    JUMP,
+    FALL_SLAM
 }
 
 
@@ -53,9 +54,21 @@ public class EnemyBoss : MonoBehaviour
     bool bAttackNowMelee;
 
     //jump attack
+    bool jumpNow;
     bool jumping;
     bool falling;
+    bool fallNow;
 
+    float fallSlamPosX;
+    public float waitTimeFallSlam;//the time before falling after last targetting of player position
+    public float targettingTimeFallSlam;//the time the boss is in the air updating player target
+    private float FallSlamTimer;
+    bool FallSlamTargetting;
+
+    private void Awake()
+    {
+        originalBossMat = spriteRenderer.material;
+    }
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -73,6 +86,10 @@ public class EnemyBoss : MonoBehaviour
 
         jumping = false;
         falling = false;
+        jumpNow = false;
+        fallNow = false;
+        fallSlamPosX = 0.0f;
+        FallSlamTargetting = false;
     }
 
     void Update()
@@ -150,6 +167,62 @@ public class EnemyBoss : MonoBehaviour
                 }
             case BossState.JUMP:
                 {
+                    groundSlamCollider.enabled = false;
+                    fireThrowerCollider.enabled = false;
+
+                    if (!jumping && !jumpNow)
+                    {
+                        jumpNow = true;
+                    }
+
+                    if (!jumping && jumpNow)
+                    {
+                        animator.Play("Boss_JumpUp");
+                        jumping = true;
+                        jumpNow = false;
+                    }
+
+                    // Start targetting once jump anim finished
+                    if (runAnimTime >= 0.99f && !FallSlamTargetting)
+                    {
+                        FallSlamTargetting = true;
+                        FallSlamTimer = Time.time;
+                    }
+
+                    // While within targeting time, update fall position
+                    if (FallSlamTargetting && (Time.time - FallSlamTimer) < targettingTimeFallSlam)
+                    {
+                        fallSlamPosX = player.transform.position.x;
+                    }
+
+                    // After targeting time expires, go to fall slam
+                    if (FallSlamTargetting && (Time.time - FallSlamTimer) >= targettingTimeFallSlam)
+                    {
+                        FallSlamTargetting = false;
+                        FallSlamTimer = Time.time; // prepare for waitTimeFallSlam
+                        changeBossState(BossState.FALL_SLAM);
+                    }
+
+                    break;
+                }
+
+            case BossState.FALL_SLAM:
+                {
+                    // Wait before falling
+                    if ((Time.time - FallSlamTimer) >= waitTimeFallSlam && !fallNow)
+                    {
+                        fallNow = true;
+                        animator.Play("Boss_JumpDown");
+                    }
+
+                    // When landing anim is done, return to wandering
+                    if (fallNow && runAnimTime >= 0.99f)
+                    {
+                        animator.Play("Boss_Idle");                      
+                        jumping = false; // reset for next jump
+                        fallNow = false;
+                        checkBossState();
+                    }
 
                     break;
                 }
@@ -166,7 +239,7 @@ public class EnemyBoss : MonoBehaviour
                     if(Mathf.Abs(player.transform.position.x - this.transform.position.x) < spotDistance)
                     {
                         prevBossState = currBossState;
-                        currBossState = BossState.CHASE;
+                        currBossState = BossState.CHASE;                      
                         saveLastAttackTime();
                     }
                     break;
@@ -197,11 +270,32 @@ public class EnemyBoss : MonoBehaviour
                         prevBossState = currBossState;
                         currBossState = BossState.CHASE;
                         saveLastAttackTime();
-                    }
-                
-
+                    }             
                     break;
                 }
+            case BossState.JUMP:
+                {
+
+                }
+                break;
+            case BossState.FALL_SLAM:
+                {
+                    if (Mathf.Abs(player.transform.position.x - this.transform.position.x) < meleeAttackDistance)
+                    {
+                        prevBossState = currBossState;
+                        currBossState = BossState.ATTACK;
+                        Vector2 velDir = rb.linearVelocity;
+                        velDir.x = 0.0f;
+                        rb.linearVelocity = velDir;
+                    }
+                    else
+                    {
+                        prevBossState = currBossState;
+                        currBossState = BossState.CHASE;
+                        
+                    }
+                }
+                break;
         }
     }
 
@@ -246,16 +340,7 @@ public class EnemyBoss : MonoBehaviour
                     }
                     break;
                 }
-            //case BossState.JUMP:
-            //    {
-            //        //enters once at the beggining
-            //        if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Boss_JumpUp") && !animator.GetCurrentAnimatorStateInfo(0).IsName("Boss_JumpDown") && !jumping)
-            //        {
-            //            animator.Play("Boss_JumpUp");
-            //            jumping = true;
-            //        }else if(!animator.GetCurrentAnimatorStateInfo(0).IsName("Boss_JumpDown") && !falling )
-            //        break;
-            //    }
+       
         }
     }
 
@@ -266,7 +351,7 @@ public class EnemyBoss : MonoBehaviour
             // Facing left
             gameObject.transform.localScale = new Vector3(-1, 1, 1);
             moveDir = -1;
-            groundSlamColliderPosX = this.transform.position.x - 3.0f;
+            groundSlamColliderPosX = this.transform.position.x - 2.7f;
             fireThrowerColliderPosX = this.transform.position.x - 3.0f;
         }
         else
@@ -274,7 +359,7 @@ public class EnemyBoss : MonoBehaviour
             // Facing right
             gameObject.transform.localScale = new Vector3(1, 1, 1);
             moveDir = 1;
-            groundSlamColliderPosX = this.transform.position.x + 3.0f;
+            groundSlamColliderPosX = this.transform.position.x + 2.7f;
             fireThrowerColliderPosX = this.transform.position.x + 3.0f;
         }
 
@@ -290,16 +375,15 @@ public class EnemyBoss : MonoBehaviour
         getDamageCollider.offset = new Vector2(offsetX, getDamageCollider.offset.y);
     }
 
-    public void HitWhiteFeedBack(Vector3 color)
+    public void changeBossState(BossState newState)
     {
-        
-
-        
+        prevBossState = currBossState;
+        currBossState = newState;
     }
 
     public IEnumerator SpriteWhiteFlash(float t)
-    {       
-        originalBossMat = spriteRenderer.sharedMaterial;     
+    {
+        //originalBossMat = spriteRenderer.material;//spriteRenderer.sharedMaterial;  now done in awake  
         spriteRenderer.material = whiteDamageMat;
         yield return new WaitForSeconds(t);
         spriteRenderer.material = originalBossMat;
@@ -307,12 +391,16 @@ public class EnemyBoss : MonoBehaviour
 
     public IEnumerator FreezeAnimation(float t)
     {
-        float originalSpeed = animator.speed;
-        animator.speed = 0f;
+        if(animator.speed != 0)
+        {
+            float originalSpeed = animator.speed;
+            animator.speed = 0f;
 
-        yield return new WaitForSeconds(t);
+            yield return new WaitForSeconds(t);
 
-        animator.speed = originalSpeed;
+            animator.speed = originalSpeed;
+        }
+        
     }
 
     void saveLastAttackTime()
