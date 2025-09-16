@@ -39,11 +39,13 @@ public class BossAnimEventManager : MonoBehaviour
 
     public void JumpSlamColliderActivation()
     {
-
+        boss.jumpSlamCollider.enabled = true;
     }
     public void JumpSlamColliderDeactivation()
     {
-
+        boss.jumpSlamCollider.enabled = false;
     }
+
+
 
 }

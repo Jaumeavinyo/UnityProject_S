@@ -4,7 +4,7 @@ public class DamageCollider : MonoBehaviour
 {
 
     public FSM_CharMov player;
-    public GameObject Enemy;
+    public EnemyBoss Enemy;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -23,7 +23,7 @@ public class DamageCollider : MonoBehaviour
             }
             player.attackGameObj.SetActive(false);
             player.ChangeState(player.knockback);
-
+            Enemy.lastAttackHit = Enemy.attacksPerformed;
 
         }
     }

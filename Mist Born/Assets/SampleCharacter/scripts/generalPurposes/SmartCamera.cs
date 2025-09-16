@@ -27,6 +27,7 @@ Gradually slows down as it approaches the target (e.g., camera follow).
     public float maxSpeed = 15f;        // optional speed cap
     private Coroutine shakeRoutine;
     public float cameraForwardOffset;
+    public float cameraUpOffset;
     void Start()
     {
         camera = GetComponent<Camera>();
@@ -54,7 +55,7 @@ Gradually slows down as it approaches the target (e.g., camera follow).
     public Vector3 GetCameraTarget()
     {
         Vector3 target = player.transform.position;
-
+        
         if (player.rigidBody.linearVelocityX > 0.0f)
         {
             target = new Vector3(player.transform.position.x + cameraForwardOffset, player.transform.position.y, transform.position.z);
@@ -63,7 +64,7 @@ Gradually slows down as it approaches the target (e.g., camera follow).
         {
             target = new Vector3(player.transform.position.x - cameraForwardOffset, player.transform.position.y, transform.position.z);
         }
-
+        target.y = player.transform.position.y + cameraUpOffset;
         return target;
     }
     public void springCameraMovement(Vector3 targetPos)
@@ -82,45 +83,43 @@ Gradually slows down as it approaches the target (e.g., camera follow).
         transform.position += velocity * Time.deltaTime;
     }
 
-    public void Shake(float duration, float magnitude, float horizontalBias = 0f)
+    public void DirectionalShake(float duration, float shakeSpeed,float left, float right, float up, float down)
     {
         // Stop previous shake if running
         if (shakeRoutine != null)
             StopCoroutine(shakeRoutine);
 
         originalPosBeforeShake = transform.position;
-        shakeRoutine = StartCoroutine(DoShake(duration, magnitude, horizontalBias));
+        shakeRoutine = StartCoroutine(DoDirectionalShake(duration, shakeSpeed, left, right, up, down));
     }
 
-   
-    private IEnumerator DoShake(float duration, float magnitude, float horizontalBias)
+    private IEnumerator DoDirectionalShake(float duration, float shakeSpeed, float left, float right, float up, float down)
     {
         float elapsed = 0f;
+        Vector3 targetOffset = Vector3.zero;
 
         while (elapsed < duration)
         {
-            // Random offset
-            float x = Random.Range(-1f, 1f);
-            float y = Random.Range(-1f, 1f);
+            // If close enough to target offset, pick a new random offset
+            if ((transform.localPosition - (originalPosBeforeShake + targetOffset)).sqrMagnitude < 0.01f)
+            {
+                float x = Random.Range(-left, right);   // negative = left, positive = right
+                float y = Random.Range(-down, up);      // negative = down, positive = up
+                targetOffset = new Vector3(x, y, 0f);
+            }
 
-            // Apply horizontal bias: push more to left (<0) or right (>0)
-            x += horizontalBias;
-
-            // Normalize and apply magnitude
-            Vector3 offset = new Vector3(x, y, 0f).normalized * magnitude;
-
-            transform.localPosition = originalPosBeforeShake + offset;
+            // Smooth movement toward the target offset
+            transform.localPosition = Vector3.MoveTowards(
+                transform.localPosition,
+                originalPosBeforeShake + targetOffset,
+                shakeSpeed * Time.deltaTime
+            );
 
             elapsed += Time.deltaTime;
             yield return null;
         }
 
-        // Reset back to original
-        transform.localPosition = originalPosBeforeShake;
-        shakeRoutine = null;
     }
-
-
     void DebugDraws()
     {
         Color lineColor = Color.red;

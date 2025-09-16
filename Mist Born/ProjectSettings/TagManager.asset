@@ -52,7 +52,19 @@ TagManager:
   - name: BackGround2
     uniqueID: 3948592173
     locked: 0
-  - name: Enviro
+  - name: BackGround3
+    uniqueID: 2116587025
+    locked: 0
+  - name: BackGround4
+    uniqueID: 3758146411
+    locked: 0
+  - name: BackGround5
+    uniqueID: 3665835503
+    locked: 0
+  - name: BackGround6
+    uniqueID: 776398421
+    locked: 0
+  - name: Enviro0
     uniqueID: 2847478835
     locked: 0
   - name: Enemies
@@ -60,6 +72,9 @@ TagManager:
     locked: 0
   - name: Player
     uniqueID: 3483997665
+    locked: 0
+  - name: enviro1
+    uniqueID: 1894959079
     locked: 0
   m_RenderingLayers:
   - Default
