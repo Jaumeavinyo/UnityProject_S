@@ -43,6 +43,7 @@ public class characterSFX : MonoBehaviour
 
    public void playSound(AudioClip audio,bool loop = false)
     {
+        //audioSource.pitch = audioSource.pitch * Random.Range(0.8f, 1.2f);
         audioSource.PlayOneShot(audio);
 
     }

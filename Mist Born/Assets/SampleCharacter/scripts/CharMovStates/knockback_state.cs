@@ -33,8 +33,7 @@ public class knockback_state : FSM_BaseState
         {
             if (my_sm.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1 && my_sm.animator.GetCurrentAnimatorStateInfo(0).IsName("Knockback"))
             {
-                my_sm.ChangeState(my_sm.idle);
-                Debug.Log("change state to idle");
+                my_sm.ChangeState(my_sm.idle);               
             }
 
             if (!knocking)

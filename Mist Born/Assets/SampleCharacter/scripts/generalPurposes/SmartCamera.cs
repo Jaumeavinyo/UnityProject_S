@@ -9,30 +9,28 @@ public class SmartCamera : MonoBehaviour
 
     public FSM_CharMov player;
     public EntityManager entityManager;
-
+    public EnemyBoss boss;
     Camera camera;
-
-    /*una linea vertical en mitad de la pantalla, el jugador se mantiene siempre que se mueve a la izquierda
-     este look ahead basado en movement direction. dar un poco de tiempo moviendose en direccion contraria para que la posicion de la camara cambie y estes a la derecha del medio
-     
-    una linea horizontal a 2 tercios de la pantalla pos si el jugador sube tanto ajustar la altura
-     */
-    /*
-     Mathf.SmoothDamp() (Smooth Deceleration)
-Gradually slows down as it approaches the target (e.g., camera follow).
-     */
     private Vector3 originalPosBeforeShake;
     Transform targetTransform;
     public float followStrength = 2f;   // how fast the camera accelerates towards the target
     public float maxSpeed = 15f;        // optional speed cap
-    private Coroutine shakeRoutine;
+    public Coroutine shakeRoutine;
     public float cameraForwardOffset;
     public float cameraUpOffset;
+
+    // Store velocity for SmoothDamp
+    private Vector3 smoothVelocity = Vector3.zero;
+
+    // How long it takes to catch up (lower = snappier, higher = floaty)
+    public float smoothTime = 0.2f;
+
+    // Distance threshold where we stop smoothing and snap directly
+    public float snapDistance = 0.05f;
+
     void Start()
     {
         camera = GetComponent<Camera>();
-
-       
 
 
     }
@@ -50,11 +48,18 @@ Gradually slows down as it approaches the target (e.g., camera follow).
         Vector3 targetPos = GetCameraTarget();
 
         springCameraMovement(targetPos);
+
+
     }
 
     public Vector3 GetCameraTarget()
     {
         Vector3 target = player.transform.position;
+        if (boss.playerDetected /*&& boss.entranceDone*/)
+        {
+            target = new Vector3((player.transform.position.x + boss.transform.position.x) / 2f, target.y, target.z);
+        }
+        
         
         if (player.rigidBody.linearVelocityX > 0.0f)
         {
@@ -69,18 +74,37 @@ Gradually slows down as it approaches the target (e.g., camera follow).
     }
     public void springCameraMovement(Vector3 targetPos)
     {
-        Vector3 cameraPos = transform.position;
+        //Vector3 cameraPos = transform.position;
 
-        // Distance between player and camera
-        Vector3 offset = targetPos - cameraPos;
-        Vector3 velocity = offset * followStrength;
+        //// Distance between player and camera
+        //Vector3 offset = targetPos - cameraPos;
+        //Vector3 velocity = offset * followStrength;
 
-        // Clamp speed 
-        if (velocity.magnitude > maxSpeed)
-            velocity = velocity.normalized * maxSpeed;
+        //// Clamp speed 
+        //if (velocity.magnitude > maxSpeed)
+        //    velocity = velocity.normalized * maxSpeed;
 
-        // Apply movement
-        transform.position += velocity * Time.deltaTime;
+        //// Apply movement
+        //transform.position += velocity * Time.deltaTime;
+        Vector3 currentPos = transform.position;
+        Vector3 offset = targetPos - currentPos;
+
+        // If close enough, snap instantly (prevents slow creep)
+        if (offset.magnitude < snapDistance)
+        {
+            transform.position = targetPos;
+            smoothVelocity = Vector3.zero; // reset velocity to avoid jitter
+            return;
+        }
+
+        // SmoothDamp interpolates smoothly with velocity, clamped by maxSpeed
+        transform.position = Vector3.SmoothDamp(
+            currentPos,
+            targetPos,
+            ref smoothVelocity,
+            smoothTime,
+            maxSpeed
+        );
     }
 
     public void DirectionalShake(float duration, float shakeSpeed,float left, float right, float up, float down)
@@ -95,31 +119,61 @@ Gradually slows down as it approaches the target (e.g., camera follow).
 
     private IEnumerator DoDirectionalShake(float duration, float shakeSpeed, float left, float right, float up, float down)
     {
+
+        //float elapsed = 0f;
+        //Vector3 targetOffset = Vector3.zero;
+
+        //while (elapsed < duration)
+        //{
+        //    // If close enough to target offset, pick a new random offset
+        //    if ((transform.localPosition - (originalPosBeforeShake + targetOffset)).sqrMagnitude < 0.10f)
+        //    {
+        //        float x = Random.Range(-left, right);   // negative = left, positive = right
+        //        float y = Random.Range(-down, up);      // negative = down, positive = up
+        //        targetOffset = new Vector3(x, y, 0f);
+        //        Debug.Log("target");
+        //    }
+
+        //    // Smooth movement toward the target offset
+        //    transform.localPosition = Vector3.MoveTowards(
+        //        transform.localPosition,
+        //        originalPosBeforeShake + targetOffset,
+        //        shakeSpeed * Time.deltaTime
+        //    );
+
+        //    elapsed += Time.deltaTime;
+        //    yield return null;
+        //}
         float elapsed = 0f;
-        Vector3 targetOffset = Vector3.zero;
+        Vector3 basePosition = originalPosBeforeShake;
 
         while (elapsed < duration)
         {
-            // If close enough to target offset, pick a new random offset
-            if ((transform.localPosition - (originalPosBeforeShake + targetOffset)).sqrMagnitude < 0.01f)
-            {
-                float x = Random.Range(-left, right);   // negative = left, positive = right
-                float y = Random.Range(-down, up);      // negative = down, positive = up
-                targetOffset = new Vector3(x, y, 0f);
-            }
+            // Apply random offset every frame for more intense shaking
+            float x = Random.Range(-left, right);
+            float y = Random.Range(-down, up);
 
-            // Smooth movement toward the target offset
-            transform.localPosition = Vector3.MoveTowards(
-                transform.localPosition,
-                originalPosBeforeShake + targetOffset,
-                shakeSpeed * Time.deltaTime
-            );
+            // Optional: Reduce intensity over time
+            float progress = elapsed / duration;
+            float currentIntensity = 1f - progress;
+
+            transform.localPosition = basePosition + new Vector3(x, y, 0f) * currentIntensity;
 
             elapsed += Time.deltaTime;
             yield return null;
         }
 
+        transform.localPosition = originalPosBeforeShake;
+
     }
+
+    private Vector3 GetRandomOffset(float left, float right, float up, float down)
+    {
+        float x = Random.Range(-left, right);
+        float y = Random.Range(-down, up);
+        return new Vector3(x, y, 0f);
+    }
+
     void DebugDraws()
     {
         Color lineColor = Color.red;

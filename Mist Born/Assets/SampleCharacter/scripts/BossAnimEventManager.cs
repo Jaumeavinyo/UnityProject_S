@@ -46,6 +46,13 @@ public class BossAnimEventManager : MonoBehaviour
         boss.jumpSlamCollider.enabled = false;
     }
 
-
+    public void BossLegSlamSFX()
+    {
+        MusicManager.Instance.PlaySFX(MusicManager.Instance.MonsterSlam);
+    }
+    public void BossFireThrower()
+    {
+        MusicManager.Instance.PlaySFX(MusicManager.Instance.MonsterFireThrower);
+    }
 
 }

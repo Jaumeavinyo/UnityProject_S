@@ -52,7 +52,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -90,7 +90,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -120,7 +120,7 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 185
-        width: 210
+        width: 35
         height: 37
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -128,10 +128,10 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 970c308f4960ade80800000000000000
-      internalID: -8153196938514939783
+      spriteID: 99d542eb89df75841ae203394e488460
+      internalID: 1663123676
       vertices: []
       indices: 
       edges: []
@@ -140,20 +140,20 @@ TextureImporter:
       name: The Circle 35x37_1
       rect:
         serializedVersion: 2
-        x: 0
-        y: 147
-        width: 210
-        height: 39
+        x: 35
+        y: 185
+        width: 35
+        height: 37
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 24777417f084c80f0800000000000000
-      internalID: -1113435776705136830
+      spriteID: 9ece416ce95c05947a41b65d92cbe62e
+      internalID: 1548102497
       vertices: []
       indices: 
       edges: []
@@ -162,20 +162,20 @@ TextureImporter:
       name: The Circle 35x37_2
       rect:
         serializedVersion: 2
-        x: 0
-        y: 110
-        width: 210
-        height: 38
+        x: 70
+        y: 185
+        width: 35
+        height: 37
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: bd1467712a1b36080800000000000000
-      internalID: -9195310704423976485
+      spriteID: 5a2eece76f7f67643822dc50ac063786
+      internalID: 1260887490
       vertices: []
       indices: 
       edges: []
@@ -184,20 +184,20 @@ TextureImporter:
       name: The Circle 35x37_3
       rect:
         serializedVersion: 2
-        x: 0
-        y: 73
-        width: 210
-        height: 39
+        x: 105
+        y: 185
+        width: 35
+        height: 37
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 9117a70eb1e51ceb0800000000000000
-      internalID: -4701373062174838503
+      spriteID: b154329123d3fdd479b0f52f6197742b
+      internalID: -233770352
       vertices: []
       indices: 
       edges: []
@@ -206,20 +206,20 @@ TextureImporter:
       name: The Circle 35x37_4
       rect:
         serializedVersion: 2
-        x: 0
-        y: 36
-        width: 210
-        height: 39
+        x: 140
+        y: 185
+        width: 35
+        height: 37
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 7d8c9e0e6787ce620800000000000000
-      internalID: 2804749119919868119
+      spriteID: bfef6684406d43349a619caebd834546
+      internalID: 1210088709
       vertices: []
       indices: 
       edges: []
@@ -228,20 +228,592 @@ TextureImporter:
       name: The Circle 35x37_5
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 71
-        height: 38
+        x: 175
+        y: 185
+        width: 35
+        height: 37
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 7aac57d446eacda90800000000000000
-      internalID: -7287758351172777305
+      spriteID: ec98295299f24514b9ee433b8a6f6374
+      internalID: 1242627952
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: The Circle 35x37_6
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 148
+        width: 35
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5c8eb34c7eec1aa42b7d7a36751d880f
+      internalID: -765606213
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: The Circle 35x37_7
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 148
+        width: 35
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 08fab594100b3144bb51b12c3af1103c
+      internalID: 1276267933
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: The Circle 35x37_8
+      rect:
+        serializedVersion: 2
+        x: 70
+        y: 148
+        width: 35
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 19be3c8084bbf6149a0c5f8f3f5b741e
+      internalID: -488891989
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: The Circle 35x37_9
+      rect:
+        serializedVersion: 2
+        x: 105
+        y: 148
+        width: 35
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5a90c35d1ea12f14e8649f05e67f1321
+      internalID: -1005773992
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: The Circle 35x37_10
+      rect:
+        serializedVersion: 2
+        x: 140
+        y: 148
+        width: 35
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 36677d88b5316864f9458a61a2f6f3fb
+      internalID: 78389693
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: The Circle 35x37_11
+      rect:
+        serializedVersion: 2
+        x: 175
+        y: 148
+        width: 35
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 92c03d6fea1d70f43ac10645a23b1498
+      internalID: 160174342
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: The Circle 35x37_12
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 111
+        width: 35
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 80c0be4f5ee6fc04b98981e0dacf3be3
+      internalID: 2115567911
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: The Circle 35x37_13
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 111
+        width: 35
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1517760a5cd1fbc4b960c4d3139a366e
+      internalID: 1583614006
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: The Circle 35x37_14
+      rect:
+        serializedVersion: 2
+        x: 70
+        y: 111
+        width: 35
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0a365cea50420504abf30be1b9771ddc
+      internalID: 265058564
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: The Circle 35x37_15
+      rect:
+        serializedVersion: 2
+        x: 105
+        y: 111
+        width: 35
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 293516f30c3388843bec033bfca16e1c
+      internalID: 1561055122
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: The Circle 35x37_16
+      rect:
+        serializedVersion: 2
+        x: 140
+        y: 111
+        width: 35
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7ceb47047fc0f034aa94c5db6f6dc79d
+      internalID: 924152104
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: The Circle 35x37_17
+      rect:
+        serializedVersion: 2
+        x: 175
+        y: 111
+        width: 35
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 46596d13d772b8441a2561ab2b556e86
+      internalID: -277581994
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: The Circle 35x37_18
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 74
+        width: 35
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bf0c9ea21b694d14cb2b1b92ac747d37
+      internalID: 323273928
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: The Circle 35x37_19
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 74
+        width: 35
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a202bf30b422abc4aab34b11139e8530
+      internalID: 1134012354
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: The Circle 35x37_20
+      rect:
+        serializedVersion: 2
+        x: 70
+        y: 74
+        width: 35
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8aab7a5015b7c364b856cdf618fda798
+      internalID: 1736072759
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: The Circle 35x37_21
+      rect:
+        serializedVersion: 2
+        x: 105
+        y: 74
+        width: 35
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8b195849c950b00479e377d7514c6caf
+      internalID: -40484462
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: The Circle 35x37_22
+      rect:
+        serializedVersion: 2
+        x: 140
+        y: 74
+        width: 35
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e539725699edbe84eb448abe3c41120c
+      internalID: 143012938
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: The Circle 35x37_23
+      rect:
+        serializedVersion: 2
+        x: 175
+        y: 74
+        width: 35
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ea31f47b27623e64bbd0fd2b23e69cf6
+      internalID: 251776401
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: The Circle 35x37_24
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 37
+        width: 35
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e75e5ccf24182104e9a72565059cf352
+      internalID: 530343314
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: The Circle 35x37_25
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 37
+        width: 35
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a692a30646175674fbe331c3fee47b61
+      internalID: 144930386
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: The Circle 35x37_26
+      rect:
+        serializedVersion: 2
+        x: 70
+        y: 37
+        width: 35
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 20c4a079b2f7a5240a506c6fa760afbe
+      internalID: -486793149
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: The Circle 35x37_27
+      rect:
+        serializedVersion: 2
+        x: 105
+        y: 37
+        width: 35
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eef747d607a37c34e9652e42f9dadda4
+      internalID: -1607583889
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: The Circle 35x37_28
+      rect:
+        serializedVersion: 2
+        x: 140
+        y: 37
+        width: 35
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ffd89c94375e2b94f980f13e160515a3
+      internalID: -1745561614
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: The Circle 35x37_29
+      rect:
+        serializedVersion: 2
+        x: 175
+        y: 37
+        width: 35
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e6b991cb2028140488770d54725af4ba
+      internalID: 1834228923
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: The Circle 35x37_30
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 35
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 072b2e03d7e05104c88c3ab373397502
+      internalID: 968945046
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: The Circle 35x37_31
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 0
+        width: 35
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fd25a94ec7c83264b8000bb8b439b955
+      internalID: 926548611
       vertices: []
       indices: 
       edges: []
@@ -250,7 +822,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: fe0584d09dbe3f14a80c1b35ff3f8455
     internalID: 0
     vertices: []
     indices: 
@@ -258,8 +830,42 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
-    nameFileIdTable: {}
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":35.0,"y":37.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      The Circle 35x37_0: 1663123676
+      The Circle 35x37_1: 1548102497
+      The Circle 35x37_10: 78389693
+      The Circle 35x37_11: 160174342
+      The Circle 35x37_12: 2115567911
+      The Circle 35x37_13: 1583614006
+      The Circle 35x37_14: 265058564
+      The Circle 35x37_15: 1561055122
+      The Circle 35x37_16: 924152104
+      The Circle 35x37_17: -277581994
+      The Circle 35x37_18: 323273928
+      The Circle 35x37_19: 1134012354
+      The Circle 35x37_2: 1260887490
+      The Circle 35x37_20: 1736072759
+      The Circle 35x37_21: -40484462
+      The Circle 35x37_22: 143012938
+      The Circle 35x37_23: 251776401
+      The Circle 35x37_24: 530343314
+      The Circle 35x37_25: 144930386
+      The Circle 35x37_26: -486793149
+      The Circle 35x37_27: -1607583889
+      The Circle 35x37_28: -1745561614
+      The Circle 35x37_29: 1834228923
+      The Circle 35x37_3: -233770352
+      The Circle 35x37_30: 968945046
+      The Circle 35x37_31: 926548611
+      The Circle 35x37_4: 1210088709
+      The Circle 35x37_5: 1242627952
+      The Circle 35x37_6: -765606213
+      The Circle 35x37_7: 1276267933
+      The Circle 35x37_8: -488891989
+      The Circle 35x37_9: -1005773992
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

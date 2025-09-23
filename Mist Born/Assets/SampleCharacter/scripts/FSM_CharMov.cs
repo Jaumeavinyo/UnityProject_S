@@ -35,6 +35,7 @@ public class Attack
 
 public class FSM_CharMov : FSM
 {
+    public bool disabled = false;
 
     public PlayerInputs     inputActions; //own generated file for inputs new system
     public InputAction      inputAction_jump; //own input added to player inputs
@@ -132,37 +133,48 @@ public class FSM_CharMov : FSM
     public override void Update()
     {
 
-      
-        if(currentState != knockback)
+        if (!disabled)
         {
-            if (inputAction_move.ReadValue<Vector2>().x > 0)
+            if (currentState != knockback)
             {
-                directionInput = 1;
+                if (inputAction_move.ReadValue<Vector2>().x > 0)
+                {
+                    directionInput = 1;
+                }
+                else if (inputAction_move.ReadValue<Vector2>().x < 0)
+                {
+                    directionInput = -1;
+                }
             }
-            else if (inputAction_move.ReadValue<Vector2>().x < 0)
+
+            setDirection();
+
+            grounded = isGrounded();
+            wallGrabbed = isWallGrabbed();
+
+            if (currentState != null)
             {
-                directionInput = -1;
+                currentState.UpdateLogic();
             }
-        }
-        
-        setDirection();
 
-        grounded = isGrounded();
-        wallGrabbed = isWallGrabbed();
-
-        if (currentState != null)
-        {
-            currentState.UpdateLogic();
-        }
-
-        if (currentState != jump && currentState != dash && currentState != roll)
-        {
-            rigidBody.gravityScale = 3;
+            if (currentState != jump && currentState != dash && currentState != roll)
+            {
+                rigidBody.gravityScale = 3;
+            }
+            else
+            {
+                rigidBody.gravityScale = 1.5f;
+            }
         }
         else
         {
-            rigidBody.gravityScale = 1.5f;
+            if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Knockback"))
+            {
+                animator.Play("KnockBack");
+            }
+           
         }
+        
                
     }
 
