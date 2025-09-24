@@ -15,6 +15,7 @@ public class MusicManager : MonoBehaviour
     public AudioClip MonsterFalling;
     public AudioClip MonsterSlam;
     public AudioClip MonsterFireThrower;
+    public AudioClip MonsterDeath;
 
     public AudioSource audioSource;
     public AudioSource sfxSource;

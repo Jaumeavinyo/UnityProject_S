@@ -55,4 +55,10 @@ public class BossAnimEventManager : MonoBehaviour
         MusicManager.Instance.PlaySFX(MusicManager.Instance.MonsterFireThrower);
     }
 
+    public void BossDeath()
+    {
+        
+        MusicManager.Instance.PlaySFX(MusicManager.Instance.MonsterDeath);
+    }
+
 }

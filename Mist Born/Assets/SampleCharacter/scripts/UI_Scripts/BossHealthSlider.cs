@@ -9,14 +9,18 @@ public class BossHealthSlider : MonoBehaviour
     public int growFactor;
     public Slider backSliderBar;
     public Slider frontSliderBar;
-    int sliderValue;// %
+    public int sliderValue = 100;// %
     int newSliderValue;
 
     public float valueChangeTime;
 
-    void Start()
+    private void Awake()
     {
         sliderValue = 100;
+    }
+    void Start()
+    {
+       
     }
 
     // Update is called once per frame

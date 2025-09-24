@@ -11,7 +11,8 @@ public enum BossState
     CHASE,
     ATTACK,
     JUMP,
-    FALL_SLAM
+    FALL_SLAM,
+    DEAD
 }
 
 
@@ -19,7 +20,7 @@ public class EnemyBoss : MonoBehaviour
 {
     public float bossScale;
 
-    private BossState currBossState;
+    public BossState currBossState;
     private BossState prevBossState;
 
     public FSM_CharMov player;
@@ -146,7 +147,7 @@ public class EnemyBoss : MonoBehaviour
         }
 
 
-        if (entranceDone)
+        if (entranceDone && currBossState != BossState.DEAD)
         {
 
             SetCurrentAnim();
@@ -388,6 +389,9 @@ public class EnemyBoss : MonoBehaviour
 
                     break;
                 }
+            case BossState.DEAD:
+
+                    break;
         }
     }
 
@@ -584,6 +588,14 @@ public class EnemyBoss : MonoBehaviour
 
     public void Die()
     {
-        //animator.Play("Die");
+        currBossState = BossState.DEAD;
+        MusicManager.Instance.audioSource.Stop();
+        StartCoroutine(FreezeAnimation(2f));
+        StartCoroutine(DieCorroutine());
+    }
+    private IEnumerator DieCorroutine()
+    {
+        yield return new WaitForSeconds(2);
+        animator.Play("Boss_Die");
     }
 }

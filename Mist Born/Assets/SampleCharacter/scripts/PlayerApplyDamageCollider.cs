@@ -12,14 +12,14 @@ public class PlayerApplyDamageCollider : MonoBehaviour
             //Debug.Log("Collided with: " + collision.name);
             if (Enemy.animator.GetCurrentAnimatorStateInfo(0).IsName("Boss_LegSlam"))
             {
-                Enemy.healthSlider.UpdateSliderValue(8);
+                Enemy.healthSlider.UpdateSliderValue(10);
                 StartCoroutine(player.FreezeAnimation(0.2f));
                 StartCoroutine(Enemy.FreezeAnimation(0.2f));
                 
             }
             else
             {
-                Enemy.healthSlider.UpdateSliderValue(3);
+                Enemy.healthSlider.UpdateSliderValue(6);
                 StartCoroutine(player.FreezeAnimation(0.2f));
                 StartCoroutine(Enemy.FreezeAnimation(0.2f));
                 
@@ -54,6 +54,12 @@ public class PlayerApplyDamageCollider : MonoBehaviour
             }
             
 
+            
+
+            if(Enemy.healthSlider.sliderValue <= 0 && Enemy.currBossState != BossState.DEAD)
+            {
+                Enemy.Die();
+            }
             if (player.attack.currCombo1Attack == 2)//last attack of the 3 attack combo (typeheavy)
             {
                 Enemy.changeBossState(BossState.JUMP);

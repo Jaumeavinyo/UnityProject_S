@@ -96,6 +96,7 @@ public class CircleSizeChange : MonoBehaviour
             Debug.Log("TP");
             teleported = true;
             paralax.SetActive(false);
+            
         }
        
         screenOverlay.color = targetColor;
